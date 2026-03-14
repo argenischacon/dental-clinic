@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title>400 Bad Request</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- 400 Error Text -->
+        <div class="text-center">
+            <div class="error mx-auto" data-text="400">400</div>
+            <p class="lead text-gray-800 mb-5">Bad Request</p>
+            <p class="text-gray-500 mb-0">We couldn't process your request...</p>
+            <a th:href="@{/}">&larr; Back to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>
