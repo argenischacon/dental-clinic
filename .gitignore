@@ -39,6 +39,7 @@ build/
 ### AI Assistants ###
 .agents/
 skills-lock.json
+.gemini
 
 ### OS generated files ###
 Thumbs.db
