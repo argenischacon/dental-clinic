@@ -8,5 +8,6 @@ public record UserResponseDto(
         Long id,
         String username,
         Role role,
-        boolean active
+        boolean active,
+        boolean mustChangePassword
 ) {}

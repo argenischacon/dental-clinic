@@ -14,4 +14,5 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     Optional<User> findByUsername(String username);
     Page<User> findAllByActiveTrue(Pageable pageable);
     Optional<User> findByIdAndActiveTrue(Long id);
+    boolean existsByRole(com.argenischacon.dentalclinic.enums.Role role);
 }
