@@ -58,7 +58,7 @@ public class AuthController {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             userService.changePassword(userDetails.getUser().getId(), changePasswordRequest);
             new SecurityContextLogoutHandler().logout(request, response, authentication);
-            return "redirect:/login?logout";
+            return "redirect:/login?passwordChanged";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
             return "auth/change-password";
