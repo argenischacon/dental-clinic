@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/base}">
 <head>
-    <title>500 Internal Server Error</title>
+    <title>Error del Servidor</title>
 </head>
 <body>
     <div layout:fragment="content">
-        <!-- 500 Error Text -->
-        <div class="text-center">
-            <div class="error mx-auto" data-text="500">500</div>
-            <p class="lead text-gray-800 mb-5">Internal Server Error</p>
-            <p class="text-gray-500 mb-0">Something went wrong on our end...</p>
-            <a th:href="@{/}">&larr; Back to Dashboard</a>
+        <div class="container-fluid">
+            <!-- 500 Error Text -->
+            <div class="text-center mt-5">
+                <div class="error mx-auto" data-text="500">500</div>
+                <p class="lead text-gray-800 mb-5">Error Interno del Servidor</p>
+                <p class="text-gray-500 mb-0" th:text="${errorMessage}">Ha ocurrido un fallo inesperado.</p>
+                <a th:href="@{/}">&larr; Volver al Dashboard</a>
+            </div>
         </div>
     </div>
 </body>
