@@ -11,8 +11,4 @@ public class WebController {
         return "dashboard";
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "auth/login";
-    }
 }
