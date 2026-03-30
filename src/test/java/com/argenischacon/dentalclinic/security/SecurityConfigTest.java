@@ -61,7 +61,7 @@ public class SecurityConfigTest {
         // Al usar un usuario "sano", el MustChangePasswordFilter lo deja pasar a la cadena real.
         // No debe redirigir a /login (isFound/302) ni lanzar Access Denied (isForbidden/403).
         // Si el controlador existe y la vista carga, devuelve 200 OK.
-        mockMvc.perform(get("/appointments/my-agenda").with(user(customUserDetails)))
+        mockMvc.perform(get("/dentist/dashboard").with(user(customUserDetails)))
                .andExpect(status().isOk());
     }
 }
