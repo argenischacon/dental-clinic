@@ -36,7 +36,9 @@ public class SecurityConfig {
                 .requestMatchers("/change-password").authenticated()
                 
                 // Roles 
-                .requestMatchers("/appointments/my-agenda").hasRole("DENTIST")
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/dentist/**").hasRole("DENTIST")
+                .requestMatchers("/receptionist/**").hasRole("RECEPTIONIST")
                 // General rules
                 .anyRequest().authenticated()
             )
