@@ -25,8 +25,21 @@ public class AdminController {
     }
 
     @GetMapping("/dentists/list")
-    public String dentistListPage(Model model, @PageableDefault(size = 10) Pageable pageable) {
-        model.addAttribute("dentistsPage", dentistService.findAllDentists(pageable));
+    public String dentistListPage(
+            Model model,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String specialty,
+            @RequestParam(required = false) Boolean active,
+            @PageableDefault(size = 10, sort = "lastName") Pageable pageable) {
+
+        model.addAttribute("dentistsPage",
+                dentistService.findAllDentists(search, specialty, active, pageable));
+
+        var stats = dentistService.getStats();
+        model.addAttribute("totalDentists",    stats.totalDentists());
+        model.addAttribute("activeDentists",   stats.activeDentists());
+        model.addAttribute("inactiveDentists", stats.inactiveDentists());
+
         return "admin/dentists/list";
     }
 
