@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Agregar Odontólogo - Clínica Dental</title>
+</head>
+<body>
+
+    <!-- ==================== SIDEBAR NAV ITEMS ==================== -->
+    <div layout:fragment="nav-items">
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Gestión
+        </div>
+
+        <!-- Nav Item - Dentists (ACTIVE) -->
+        <li class="nav-item active">
+            <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseDentists"
+               aria-expanded="true" aria-controls="collapseDentists">
+                <i class="fas fa-fw fa-user-md"></i>
+                <span>Odontólogos</span>
+            </a>
+            <div id="collapseDentists" class="collapse show" aria-labelledby="headingDentists"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Opciones:</h6>
+                    <a class="collapse-item" th:href="@{/admin/dentists/list}">Ver Odontólogos</a>
+                    <a class="collapse-item active" th:href="@{/admin/dentists/add}">Agregar Odontólogo</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- Nav Item - Receptionists -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReceptionists"
+               aria-expanded="true" aria-controls="collapseReceptionists">
+                <i class="fas fa-fw fa-user-tie"></i>
+                <span>Recepcionistas</span>
+            </a>
+            <div id="collapseReceptionists" class="collapse" aria-labelledby="headingReceptionists"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Opciones:</h6>
+                    <a class="collapse-item" th:href="@{/admin/receptionists/list}">Ver Recepcionistas</a>
+                    <a class="collapse-item" th:href="@{/admin/receptionists/add}">Agregar Recepcionista</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- Nav Item - Services -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseServices"
+               aria-expanded="true" aria-controls="collapseServices">
+                <i class="fas fa-fw fa-briefcase-medical"></i>
+                <span>Servicios</span>
+            </a>
+            <div id="collapseServices" class="collapse" aria-labelledby="headingServices"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Opciones:</h6>
+                    <a class="collapse-item" th:href="@{/admin/services/list}">Ver Servicios</a>
+                    <a class="collapse-item" th:href="@{/admin/services/add}">Agregar Servicio</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Reportes
+        </div>
+
+        <!-- Nav Item - Reports -->
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/admin/reports}">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Generar Reportes</span>
+            </a>
+        </li>
+
+    </div>
+    <!-- ==================== END SIDEBAR NAV ITEMS ==================== -->
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <div layout:fragment="content">
+        <!--/*@thymesVar id="dentistRequestDto" type="com.argenischacon.dentalclinic.dto.dentist.DentistRequestDto"*/-->
+
+        <!-- Page Heading -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h1 class="h3 mb-1 text-gray-800">Agregar Odontólogo</h1>
+                <p class="mb-0 text-gray-600 small">Complete el perfil profesional para integrar al nuevo miembro del equipo.</p>
+            </div>
+            <a th:href="@{/admin/dentists/list}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+                <i class="fas fa-arrow-left fa-sm text-white-50 mr-1"></i> Volver a la lista
+            </a>
+        </div>
+
+        <!-- Form -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Información del Nuevo Profesional</h6>
+                    </div>
+                    
+                    <div class="card-body px-4 py-5">
+                    
+                        <!-- Global alerts (server errors or success) -->
+                        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+                        <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
+
+                        <!-- Creation Form -->
+                        <form th:action="@{/admin/dentists/save}" th:object="${dentistRequestDto}" method="post">
+                            
+                            <!-- ********** SECTION 01: PERSONAL DATA ********** -->
+                            <div class="d-flex align-items-center mb-4">
+                                <span class="badge badge-primary rounded-circle p-2 d-flex align-items-center justify-content-center mr-2" style="width: 32px; height: 32px;">01</span>
+                                <h5 class="font-weight-bold text-gray-800 m-0">Datos Personales</h5>
+                            </div>
+                            
+                            <div class="form-row">
+                                <!-- First Name -->
+                                <div class="form-group col-md-4 mb-4">
+                                    <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="nameInput">Nombre</label>
+                                    <input type="text" class="form-control bg-light border-0" id="nameInput" th:field="*{name}" placeholder="Ej: Julian" required>
+                                </div>
+                                
+                                <!-- Last Name -->
+                                <div class="form-group col-md-4 mb-4">
+                                    <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="lastNameInput">Apellido</label>
+                                    <input type="text" class="form-control bg-light border-0" id="lastNameInput" th:field="*{lastName}" placeholder="Ej: Rodriguez" required>
+                                </div>
+                                
+                                <!-- DNI -->
+                                <div class="form-group col-md-4 mb-4">
+                                    <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="dniInput">DNI</label>
+                                    <input type="text" class="form-control bg-light border-0" id="dniInput" th:field="*{dni}" placeholder="8 dígitos sin puntos" required maxlength="20">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <!-- Date of Birth -->
+                                <div class="form-group col-md-4 mb-4">
+                                    <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="birthDateInput">Fecha de Nacimiento</label>
+                                    <input type="date" class="form-control bg-light border-0" id="birthDateInput" th:field="*{birthDate}" required>
+                                </div>
+                                
+                                <!-- Email -->
+                                <div class="form-group col-md-8 mb-4">
+                                    <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="emailInput">Email</label>
+                                    <input type="email" class="form-control bg-light border-0" id="emailInput" th:field="*{email}" placeholder="profesional@clinica.com" required maxlength="60">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <!-- Phone -->
+                                <div class="form-group col-md-4 mb-4">
+                                    <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="phoneInput">Teléfono</label>
+                                    <input type="tel" class="form-control bg-light border-0" id="phoneInput" th:field="*{phone}" placeholder="+54 9 11 ...">
+                                </div>
+                                
+                                <!-- Address -->
+                                <div class="form-group col-md-8 mb-4">
+                                    <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="addressInput">Dirección</label>
+                                    <input type="text" class="form-control bg-light border-0" id="addressInput" th:field="*{address}" placeholder="Calle, Número, Piso/Depto, Ciudad" maxlength="255">
+                                </div>
+                            </div>
+                            
+                            <!-- Information Alert -->
+                            <div class="alert alert-primary d-flex align-items-center mt-2 mb-5 border-left-primary" role="alert" style="background-color: #e8f4fa; color: #2e59d9;">
+                                <i class="fas fa-info-circle fa-lg mr-3"></i>
+                                <div class="small">
+                                    El <strong>DNI</strong> ingresado será asignado automáticamente como el usuario y contraseña temporal del profesional. Por seguridad, el sistema le solicitará un <strong>cambio de contraseña obligatorio</strong> en su primer inicio de sesión.
+                                </div>
+                            </div>
+                            
+                            <!-- ********** SECTION 02: PROFESSIONAL DATA ********** -->
+                            <div class="d-flex align-items-center mb-4">
+                                <span class="badge badge-primary rounded-circle p-2 d-flex align-items-center justify-content-center mr-2" style="width: 32px; height: 32px;">02</span>
+                                <h5 class="font-weight-bold text-gray-800 m-0">Datos Profesionales</h5>
+                            </div>
+                            
+                            <div class="form-row">
+                                <!-- Professional License -->
+                                <div class="form-group col-md-4 mb-4">
+                                    <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="licenseInput">Matrícula Profesional</label>
+                                    <input type="text" class="form-control bg-light border-0" id="licenseInput" th:field="*{licenseNumber}" placeholder="MP-00000" required maxlength="20">
+                                </div>
+                                
+                                <!-- Specialty -->
+                                <div class="form-group col-md-4 mb-4">
+                                    <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="specialtyInput">Especialidad</label>
+                                    <select class="form-control bg-light border-0" id="specialtyInput" th:field="*{specialty}" required>
+                                        <option disabled selected value="">Seleccione especialidad</option>
+                                        <option value="GENERAL">Odontología General</option>
+                                        <option value="ORTHODONTICS">Ortodoncia</option>
+                                        <option value="PERIODONTICS">Periodoncia</option>
+                                        <option value="ENDODONTICS">Endodoncia</option>
+                                        <option value="PEDIATRIC">Odontopediatría</option>
+                                        <option value="ORAL_SURGERY">Cirugía Oral</option>
+                                        <option value="PROSTHODONTICS">Prótesis Dental</option>
+                                        <option value="IMPLANTOLOGY">Implantología</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Hire Date -->
+                                <div class="form-group col-md-4 mb-4">
+                                    <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="hireDateInput">Fecha de Contratación</label>
+                                    <input type="date" class="form-control bg-light border-0" id="hireDateInput" th:field="*{hireDate}" required>
+                                </div>
+                            </div>
+                            
+                            <!-- Divider and Action Buttons -->
+                            <hr class="mt-4 mb-4">
+                            
+                            <div class="d-flex justify-content-end align-items-center">
+                                <a th:href="@{/admin/dentists/list}" class="btn btn-link text-gray-600 font-weight-bold mr-3 text-decoration-none">
+                                    Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary px-4 py-2 font-weight-bold shadow-sm">
+                                    <i class="fas fa-save mr-2"></i>Guardar Odontólogo
+                                </button>
+                            </div>
+                            
+                        </form>
+                    </div>
+        </div>
+
+    </div>
+    <!-- ==================== END MAIN CONTENT ==================== -->
+
+</body>
+</html>

@@ -49,14 +49,5 @@ public record DentistRequestDto(
         
         @NotNull(message = "La fecha de contratación es obligatoria")
         @PastOrPresent(message = "La fecha de contratación no puede ser futura")
-        LocalDate hireDate,
-        
-        // User data
-        @NotBlank(message = "El username es obligatorio")
-        @Size(max = 50, message = "El usuario no puede exceder 50 caracteres")
-        String username,
-        
-        @NotBlank(message = "La contraseña es obligatoria")
-        @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
-        String password
+        LocalDate hireDate
 ) {}

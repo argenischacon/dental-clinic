@@ -1,15 +1,53 @@
 package com.argenischacon.dentalclinic.controller;
 
+import com.argenischacon.dentalclinic.dto.dentist.DentistRequestDto;
+import com.argenischacon.dentalclinic.service.DentistService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin")
+@RequiredArgsConstructor
 public class AdminController {
+
+    private final DentistService dentistService;
 
     @GetMapping("/dashboard")
     public String dashboard() {
         return "admin/dashboard";
+    }
+
+    @GetMapping("/dentists/list")
+    public String dentistListPage(Model model, @PageableDefault(size = 10) Pageable pageable) {
+        model.addAttribute("dentistsPage", dentistService.findAllDentists(pageable));
+        return "admin/dentists/list";
+    }
+
+    @GetMapping("/dentists/add")
+    public String dentistAdd(@ModelAttribute DentistRequestDto dentistRequestDto) {
+        return "admin/dentists/add";
+    }
+
+    @PostMapping("/dentists/save")
+    public String saveDentist(@Valid @ModelAttribute DentistRequestDto dentistRequestDto,
+                              BindingResult result,
+                              RedirectAttributes redirectAttributes) {
+
+        if (result.hasErrors()) {
+            return "admin/dentists/add";
+        }
+
+        dentistService.dentistAdd(dentistRequestDto);
+
+        redirectAttributes.addFlashAttribute("success", "El odontólogo ha sido registrado exitosamente.");
+
+        return "redirect:/admin/dentists/list";
     }
 }

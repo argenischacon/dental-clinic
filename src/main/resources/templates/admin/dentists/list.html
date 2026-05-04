@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Odontólogos - Clínica Dental</title>
+    <style>
+        /* Initial avatar */
+        .avatar-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        /* Specialty badge pill */
+        .badge-specialty {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.3em 0.75em;
+            border-radius: 50px;
+            letter-spacing: 0.02em;
+        }
+        /* Status badge with dot */
+        .badge-status {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.3em 0.75em;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .badge-status .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        /* Name in table */
+        .dentist-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+        /* Secondary contact */
+        .contact-secondary {
+            font-size: 0.78rem;
+            color: #858796;
+        }
+        /* Inactive row */
+        .row-inactive td {
+            opacity: 0.65;
+        }
+        /* Action buttons */
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+        /* License text */
+        .license-text {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #858796;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <!-- ==================== SIDEBAR NAV ITEMS ==================== -->
+    <div layout:fragment="nav-items">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Gestión
+        </div>
+
+        <!-- Nav Item - Dentists (ACTIVE) -->
+        <li class="nav-item active">
+            <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseDentists"
+               aria-expanded="true" aria-controls="collapseDentists">
+                <i class="fas fa-fw fa-user-md"></i>
+                <span>Odontólogos</span>
+            </a>
+            <div id="collapseDentists" class="collapse show" aria-labelledby="headingDentists"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Opciones:</h6>
+                    <a class="collapse-item active" th:href="@{/admin/dentists/list}">Ver Odontólogos</a>
+                    <a class="collapse-item" th:href="@{/admin/dentists/add}">Agregar Odontólogo</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- Nav Item - Receptionists -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReceptionists"
+               aria-expanded="true" aria-controls="collapseReceptionists">
+                <i class="fas fa-fw fa-user-tie"></i>
+                <span>Recepcionistas</span>
+            </a>
+            <div id="collapseReceptionists" class="collapse" aria-labelledby="headingReceptionists"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Opciones:</h6>
+                    <a class="collapse-item" th:href="@{/admin/receptionists/list}">Ver Recepcionistas</a>
+                    <a class="collapse-item" th:href="@{/admin/receptionists/add}">Agregar Recepcionista</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- Nav Item - Services -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseServices"
+               aria-expanded="true" aria-controls="collapseServices">
+                <i class="fas fa-fw fa-briefcase-medical"></i>
+                <span>Servicios</span>
+            </a>
+            <div id="collapseServices" class="collapse" aria-labelledby="headingServices"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Opciones:</h6>
+                    <a class="collapse-item" th:href="@{/admin/services/list}">Ver Servicios</a>
+                    <a class="collapse-item" th:href="@{/admin/services/add}">Agregar Servicio</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Reportes
+        </div>
+
+        <!-- Nav Item - Reports -->
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/admin/reports}">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Generar Reportes</span>
+            </a>
+        </li>
+
+    </div>
+    <!-- ==================== END SIDEBAR NAV ITEMS ==================== -->
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <div layout:fragment="content">
+
+        <!-- Page Heading -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h1 class="h3 mb-1 text-gray-800">Gestión de Odontólogos</h1>
+                <p class="mb-0 text-gray-600 small">Administra el equipo de odontólogos de la clínica</p>
+            </div>
+            <a th:href="@{/admin/dentists/add}" class="d-none d-sm-inline-block btn btn-primary shadow-sm">
+                <i class="fas fa-plus fa-sm text-white-50 mr-1"></i> Agregar Odontólogo
+            </a>
+        </div>
+
+        <!-- ===== STATISTICS CARDS ===== -->
+        <div class="row mb-4">
+
+            <!-- Total Dentists -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Total Odontólogos
+                                </div>
+                                <div class="h4 mb-0 font-weight-bold text-gray-800"
+                                     th:text="${totalDentists ?: 0}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-user-md fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Activos
+                                </div>
+                                <div class="h4 mb-0 font-weight-bold text-gray-800"
+                                     th:text="${activeDentists ?: 0}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inactive -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    Inactivos
+                                </div>
+                                <div class="h4 mb-0 font-weight-bold text-gray-800"
+                                     th:text="${inactiveDentists ?: 0}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-times-circle fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Specialties -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                    Especialidades
+                                </div>
+                                <div class="h4 mb-0 font-weight-bold text-gray-800"
+                                     th:text="${totalSpecialties ?: 0}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-stethoscope fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- ===== END STATISTICS CARDS ===== -->
+
+        <!-- ===== FILTERS ===== -->
+        <div class="card shadow mb-4">
+            <div class="card-body py-3">
+                <form th:action="@{/admin/dentists/list}" method="get" id="filterForm">
+                    <div class="form-row align-items-end">
+
+                        <!-- Search -->
+                        <div class="col-md-5 mb-2 mb-md-0">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1"
+                                   for="searchInput">Búsqueda rápida</label>
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-light border-0">
+                                        <i class="fas fa-search fa-sm text-gray-400"></i>
+                                    </span>
+                                </div>
+                                <input type="text"
+                                       id="searchInput"
+                                       name="search"
+                                       class="form-control bg-light border-0 small"
+                                       placeholder="Nombre, matrícula o email..."
+                                       th:value="${param.search}">
+                            </div>
+                        </div>
+
+                        <!-- Specialty -->
+                        <div class="col-md-3 mb-2 mb-md-0">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1"
+                                   for="specialtyFilter">Especialidad</label>
+                            <select id="specialtyFilter" name="specialty"
+                                    class="form-control form-control-sm bg-light border-0">
+                                <option value="">Todas</option>
+                                <option value="GENERAL"
+                                        th:selected="${param.specialty == 'GENERAL'}">Odontología General</option>
+                                <option value="ORTHODONTICS"
+                                        th:selected="${param.specialty == 'ORTHODONTICS'}">Ortodoncia</option>
+                                <option value="PERIODONTICS"
+                                        th:selected="${param.specialty == 'PERIODONTICS'}">Periodoncia</option>
+                                <option value="ENDODONTICS"
+                                        th:selected="${param.specialty == 'ENDODONTICS'}">Endodoncia</option>
+                                <option value="PEDIATRIC"
+                                        th:selected="${param.specialty == 'PEDIATRIC'}">Odontopediatría</option>
+                                <option value="ORAL_SURGERY"
+                                        th:selected="${param.specialty == 'ORAL_SURGERY'}">Cirugía Oral</option>
+                                <option value="PROSTHODONTICS"
+                                        th:selected="${param.specialty == 'PROSTHODONTICS'}">Prótesis Dental</option>
+                                <option value="IMPLANTOLOGY"
+                                        th:selected="${param.specialty == 'IMPLANTOLOGY'}">Implantología</option>
+                            </select>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="col-md-2 mb-2 mb-md-0">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1"
+                                   for="statusFilter">Estado</label>
+                            <select id="statusFilter" name="active"
+                                    class="form-control form-control-sm bg-light border-0">
+                                <option value="">Todos</option>
+                                <option value="true"
+                                        th:selected="${param.active == 'true'}">Activos</option>
+                                <option value="false"
+                                        th:selected="${param.active == 'false'}">Inactivos</option>
+                            </select>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="col-md-2 d-flex align-items-center gap-2">
+                            <button type="submit" class="btn btn-primary btn-sm mr-1">
+                                <i class="fas fa-search fa-sm"></i>
+                            </button>
+                            <a th:href="@{/admin/dentists/list}" class="btn btn-light btn-sm text-gray-600">
+                                <i class="fas fa-times fa-sm"></i> Limpiar
+                            </a>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- ===== END FILTERS ===== -->
+
+        <!-- ===== DENTISTS TABLE ===== -->
+        <div class="card shadow mb-4">
+
+            <!-- Card Header -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Lista de Odontólogos</h6>
+                <span class="text-xs text-gray-500">
+                    Mostrando
+                    <span class="font-weight-bold text-gray-700"
+                          th:text="${dentistsPage != null ? dentistsPage.numberOfElements : 0}">0</span>
+                    de
+                    <span class="font-weight-bold text-gray-700"
+                          th:text="${dentistsPage != null ? dentistsPage.totalElements : 0}">0</span>
+                    registros
+                </span>
+            </div>
+
+            <!-- Card Body: Table -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="dentistsTable" width="100%" cellspacing="0">
+
+                        <!-- Header -->
+                        <thead class="thead-light">
+                            <tr>
+                                <th class="pl-4">Odontólogo</th>
+                                <th>Matrícula</th>
+                                <th>Especialidad</th>
+                                <th>Contacto</th>
+                                <th>Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <!-- Body -->
+                        <tbody>
+
+                            <!-- Message if no results -->
+                            <tr th:if="${dentistsPage == null or dentistsPage.isEmpty()}">
+                                <td colspan="6" class="text-center py-5 text-gray-500">
+                                    <i class="fas fa-user-md fa-3x mb-3 d-block text-gray-300"></i>
+                                    No se encontraron odontólogos con los filtros aplicados.
+                                </td>
+                            </tr>
+
+                            <!-- Data rows with Thymeleaf -->
+                            <tr th:each="dentist : ${dentistsPage}"
+                                th:classappend="${!dentist.active} ? 'row-inactive' : ''">
+
+                                <!-- Avatar + Name -->
+                                <td class="align-middle pl-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-circle mr-3"
+                                             th:style="${'background-color: ' + (dentist.active ? '#4e73df' : '#858796')}">
+                                            <span th:text="${#strings.substring(dentist.name,0,1) + #strings.substring(dentist.lastName,0,1)}">DR</span>
+                                        </div>
+                                        <div>
+                                            <span class="dentist-name"
+                                                  th:text="${dentist.name + ' ' + dentist.lastName}">Nombre Apellido</span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Professional License -->
+                                <td class="align-middle">
+                                    <span class="license-text" th:text="${dentist.licenseNumber}">MP-00000</span>
+                                </td>
+
+                                <!-- Specialty -->
+                                <td class="align-middle">
+                                    <!-- GENERAL -->
+                                    <span th:if="${dentist.specialty.name() == 'GENERAL'}"
+                                          class="badge-specialty"
+                                          style="background-color:#dbeafe; color:#1d4ed8;">
+                                        Odontología General
+                                    </span>
+                                    <!-- ORTHODONTICS -->
+                                    <span th:if="${dentist.specialty.name() == 'ORTHODONTICS'}"
+                                          class="badge-specialty"
+                                          style="background-color:#ede9fe; color:#6d28d9;">
+                                        Ortodoncia
+                                    </span>
+                                    <!-- PERIODONTICS -->
+                                    <span th:if="${dentist.specialty.name() == 'PERIODONTICS'}"
+                                          class="badge-specialty"
+                                          style="background-color:#fce7f3; color:#be185d;">
+                                        Periodoncia
+                                    </span>
+                                    <!-- ENDODONTICS -->
+                                    <span th:if="${dentist.specialty.name() == 'ENDODONTICS'}"
+                                          class="badge-specialty"
+                                          style="background-color:#ccfbf1; color:#0f766e;">
+                                        Endodoncia
+                                    </span>
+                                    <!-- PEDIATRIC -->
+                                    <span th:if="${dentist.specialty.name() == 'PEDIATRIC'}"
+                                          class="badge-specialty"
+                                          style="background-color:#ffedd5; color:#c2410c;">
+                                        Odontopediatría
+                                    </span>
+                                    <!-- ORAL_SURGERY -->
+                                    <span th:if="${dentist.specialty.name() == 'ORAL_SURGERY'}"
+                                          class="badge-specialty"
+                                          style="background-color:#fee2e2; color:#b91c1c;">
+                                        Cirugía Oral
+                                    </span>
+                                    <!-- PROSTHODONTICS -->
+                                    <span th:if="${dentist.specialty.name() == 'PROSTHODONTICS'}"
+                                          class="badge-specialty"
+                                          style="background-color:#fef9c3; color:#a16207;">
+                                        Prótesis Dental
+                                    </span>
+                                    <!-- IMPLANTOLOGY -->
+                                    <span th:if="${dentist.specialty.name() == 'IMPLANTOLOGY'}"
+                                          class="badge-specialty"
+                                          style="background-color:#f0fdf4; color:#15803d;">
+                                        Implantología
+                                    </span>
+                                </td>
+
+                                <!-- Contact -->
+                                <td class="align-middle">
+                                    <div class="font-weight-bold small" th:text="${dentist.email}">email@clinica.com</div>
+                                    <div class="contact-secondary" th:text="${dentist.phone ?: '-'}">+54 11 0000-0000</div>
+                                </td>
+
+                                <!-- Status -->
+                                <td class="align-middle">
+                                    <!-- Active -->
+                                    <span th:if="${dentist.active}"
+                                          class="badge-status"
+                                          style="background-color:#dcfce7; color:#15803d; border:1px solid #bbf7d0;">
+                                        <span class="dot" style="background-color:#16a34a;"></span>
+                                        Activo
+                                    </span>
+                                    <!-- Inactivo -->
+                                    <span th:unless="${dentist.active}"
+                                          class="badge-status"
+                                          style="background-color:#f3f4f6; color:#6b7280; border:1px solid #e5e7eb;">
+                                        <span class="dot" style="background-color:#9ca3af;"></span>
+                                        Inactivo
+                                    </span>
+                                </td>
+
+                                <!-- Actions -->
+                                <td class="align-middle text-center">
+                                    <div class="btn-group" role="group">
+
+                                        <!-- Edit -->
+                                        <a th:href="@{/admin/dentists/edit/{id}(id=${dentist.id})}"
+                                           class="btn btn-outline-primary btn-action mr-1"
+                                           title="Editar odontólogo">
+                                            <i class="fas fa-pencil-alt fa-xs"></i>
+                                        </a>
+
+                                        <!-- View details -->
+                                        <a th:href="@{/admin/dentists/view/{id}(id=${dentist.id})}"
+                                           class="btn btn-outline-secondary btn-action mr-1"
+                                           title="Ver detalle">
+                                            <i class="fas fa-eye fa-xs"></i>
+                                        </a>
+
+                                        <!-- Deactivate (if active) -->
+                                        <form th:if="${dentist.active}"
+                                              th:action="@{/admin/dentists/deactivate/{id}(id=${dentist.id})}"
+                                              method="post" class="d-inline"
+                                              onsubmit="return confirm('¿Desactivar este odontólogo?')">
+                                            <button type="submit"
+                                                    class="btn btn-outline-danger btn-action"
+                                                    title="Desactivar">
+                                                <i class="fas fa-ban fa-xs"></i>
+                                            </button>
+                                        </form>
+
+                                        <!-- Activate (if inactive) -->
+                                        <form th:unless="${dentist.active}"
+                                              th:action="@{/admin/dentists/activate/{id}(id=${dentist.id})}"
+                                              method="post" class="d-inline"
+                                              onsubmit="return confirm('¿Activar este odontólogo?')">
+                                            <button type="submit"
+                                                    class="btn btn-outline-success btn-action"
+                                                    title="Activar">
+                                                <i class="fas fa-check fa-xs"></i>
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+            <!-- End Card Body -->
+
+            <!-- ===== PAGINATION ===== -->
+            <div class="card-footer bg-white d-flex align-items-center justify-content-between py-3"
+                 th:if="${dentistsPage != null and dentistsPage.totalPages > 0}">
+
+                <!-- Records info -->
+                <div class="text-xs text-gray-600">
+                    Página
+                    <span class="font-weight-bold"
+                          th:text="${dentistsPage.number + 1}">1</span>
+                    de
+                    <span class="font-weight-bold"
+                          th:text="${dentistsPage.totalPages}">1</span>
+                    &mdash;
+                    <span th:text="${dentistsPage.totalElements}">0</span> registros en total
+                </div>
+
+                <!-- Pagination controls -->
+                <nav aria-label="Paginación de odontólogos">
+                    <ul class="pagination pagination-sm mb-0">
+
+                        <!-- Previous -->
+                        <li class="page-item" th:classappend="${dentistsPage.first} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/admin/dentists/list(page=${dentistsPage.number - 1},
+                                          size=${dentistsPage.size},
+                                          search=${param.search},
+                                          specialty=${param.specialty},
+                                          active=${param.active})}"
+                               aria-label="Anterior">
+                                <i class="fas fa-chevron-left fa-xs"></i>
+                            </a>
+                        </li>
+
+                        <!-- Page numbers -->
+                        <li class="page-item"
+                            th:each="pageNum : ${#numbers.sequence(0, dentistsPage.totalPages - 1)}"
+                            th:classappend="${pageNum == dentistsPage.number} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{/admin/dentists/list(page=${pageNum},
+                                          size=${dentistsPage.size},
+                                          search=${param.search},
+                                          specialty=${param.specialty},
+                                          active=${param.active})}"
+                               th:text="${pageNum + 1}">1</a>
+                        </li>
+
+                        <!-- Next -->
+                        <li class="page-item" th:classappend="${dentistsPage.last} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/admin/dentists/list(page=${dentistsPage.number + 1},
+                                          size=${dentistsPage.size},
+                                          search=${param.search},
+                                          specialty=${param.specialty},
+                                          active=${param.active})}"
+                               aria-label="Siguiente">
+                                <i class="fas fa-chevron-right fa-xs"></i>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+
+            </div>
+            <!-- ===== END PAGINATION ===== -->
+
+        </div>
+        <!-- ===== END DENTISTS TABLE ===== -->
+
+
+        <!-- Script to show SweetAlert if 'success' attribute exists -->
+        <script th:if="${success}">
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "[[${success}]]",
+              showConfirmButton: false,
+              timer: 2000
+            });
+        </script>
+
+    </div>
+    <!-- ==================== END MAIN CONTENT ==================== -->
+
+</body>
+</html>
