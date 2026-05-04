@@ -25,7 +25,6 @@ public interface DentistMapper {
     @Mapping(target = "username", source = "user.username")
     DentistResponseDto toResponseDto(Dentist entity);
 
-    @Mapping(target = "fullName", expression = "java(entity.getName() + \" \" + entity.getLastName())")
     DentistListDto toListDto(Dentist entity);
 
     @Mapping(target = "fullName", expression = "java(entity.getName() + \" \" + entity.getLastName())")

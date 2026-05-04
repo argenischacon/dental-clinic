@@ -6,7 +6,8 @@ import lombok.Builder;
 @Builder
 public record DentistListDto(
         Long id,
-        String fullName,
+        String name,
+        String lastName,
         String licenseNumber,
         DentalSpecialty specialty,
         String email,
