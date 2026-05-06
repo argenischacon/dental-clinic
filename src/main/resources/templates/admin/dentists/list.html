@@ -475,12 +475,16 @@
                                             <i class="fas fa-pencil-alt fa-xs"></i>
                                         </a>
 
-                                        <!-- View details -->
-                                        <a th:href="@{/admin/dentists/view/{id}(id=${dentist.id})}"
-                                           class="btn btn-outline-secondary btn-action mr-1"
-                                           title="Ver detalle">
+                                        <button type="button"
+                                                class="btn btn-outline-secondary btn-action mr-1"
+                                                title="Ver detalle"
+                                                data-toggle="modal"
+                                                data-target="#dentistDetailModal"
+                                                th:attr="hx-get=@{/admin/dentists/{id}/detail(id=${dentist.id})}"
+                                                hx-target="#dentistDetailModal .modal-dialog"
+                                                hx-swap="innerHTML">
                                             <i class="fas fa-eye fa-xs"></i>
-                                        </a>
+                                        </button>
 
                                         <!-- Deactivate (if active) -->
                                         <form th:if="${dentist.active}"
@@ -597,6 +601,23 @@
               timer: 2000
             });
         </script>
+
+        <!-- ===== MODAL: VIEW DENTIST DETAILS ===== -->
+        <div class="modal fade" id="dentistDetailModal" tabindex="-1"
+             role="dialog" aria-labelledby="dentistDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+
+                <!-- Content loaded via HTMX -->
+                <div class="modal-content border-0">
+                    <div class="modal-body text-center py-5">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-2 text-muted font-weight-bold">Cargando perfil...</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- ===== END MODAL ===== -->
 
     </div>
     <!-- ==================== END MAIN CONTENT ==================== -->

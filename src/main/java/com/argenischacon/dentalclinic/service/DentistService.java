@@ -2,6 +2,7 @@ package com.argenischacon.dentalclinic.service;
 
 import com.argenischacon.dentalclinic.dto.dentist.DentistListDto;
 import com.argenischacon.dentalclinic.dto.dentist.DentistRequestDto;
+import com.argenischacon.dentalclinic.dto.dentist.DentistResponseDto;
 import com.argenischacon.dentalclinic.dto.dentist.DentistStatsDto;
 import com.argenischacon.dentalclinic.enums.Role;
 import com.argenischacon.dentalclinic.mappers.DentistMapper;
@@ -9,6 +10,7 @@ import com.argenischacon.dentalclinic.model.Dentist;
 import com.argenischacon.dentalclinic.model.User;
 import com.argenischacon.dentalclinic.repository.DentistRepository;
 import com.argenischacon.dentalclinic.specification.DentistSpecification;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -45,9 +47,16 @@ public class DentistService {
     }
 
     public DentistStatsDto getStats() {
-        long total    = dentistRepository.count();
-        long active   = dentistRepository.countByActiveTrue();
+        long total = dentistRepository.count();
+        long active = dentistRepository.countByActiveTrue();
         long inactive = dentistRepository.countByActiveFalse();
         return new DentistStatsDto(total, active, inactive);
+    }
+
+    public DentistResponseDto findById(Long id) {
+        Dentist dentist =  dentistRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Odontólogo no encontrado con ID: " + id));
+
+        return dentistMapper.toResponseDto(dentist);
     }
 }

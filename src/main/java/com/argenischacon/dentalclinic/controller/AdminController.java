@@ -2,6 +2,7 @@ package com.argenischacon.dentalclinic.controller;
 
 import com.argenischacon.dentalclinic.dto.dentist.DentistRequestDto;
 import com.argenischacon.dentalclinic.service.DentistService;
+import jakarta.servlet.ServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -36,8 +37,8 @@ public class AdminController {
                 dentistService.findAllDentists(search, specialty, active, pageable));
 
         var stats = dentistService.getStats();
-        model.addAttribute("totalDentists",    stats.totalDentists());
-        model.addAttribute("activeDentists",   stats.activeDentists());
+        model.addAttribute("totalDentists", stats.totalDentists());
+        model.addAttribute("activeDentists", stats.activeDentists());
         model.addAttribute("inactiveDentists", stats.inactiveDentists());
 
         return "admin/dentists/list";
@@ -62,5 +63,11 @@ public class AdminController {
         redirectAttributes.addFlashAttribute("success", "El odontólogo ha sido registrado exitosamente.");
 
         return "redirect:/admin/dentists/list";
+    }
+
+    @GetMapping("/dentists/{id}/detail")
+    public String getDentistDetailModal(@PathVariable Long id, Model model, ServletResponse servletResponse) {
+        model.addAttribute("dentist", dentistService.findById(id));
+        return "admin/dentists/_detail :: modal-content";
     }
 }

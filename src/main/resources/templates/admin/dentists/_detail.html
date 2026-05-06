@@ -1,0 +1,130 @@
+<div th:fragment="modal-content" class="modal-content border-0 shadow-lg">
+    <!-- Modal Header -->
+    <div class="modal-header bg-light border-bottom-0 py-3">
+        <h5 class="modal-title font-weight-bold text-gray-800">
+            <i class="fas fa-user-md text-primary mr-2"></i> Detalle del Odontólogo
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body px-4 py-4">
+        <!-- Profile Section -->
+        <div class="d-flex align-items-start mb-4 pb-4 border-bottom">
+            <!-- Avatar -->
+            <div class="d-flex align-items-center justify-content-center text-white rounded-circle shadow-sm mr-4"
+                 th:style="${'width: 100px; height: 100px; font-size: 2.5rem; background-color: ' + (dentist.active ? '#4e73df' : '#858796')}">
+                <span th:text="${#strings.substring(dentist.name,0,1) + #strings.substring(dentist.lastName,0,1)}">DR</span>
+            </div>
+            
+            <div class="flex-grow-1 pt-2">
+                <div class="d-flex align-items-center mb-2">
+                    <h4 class="font-weight-bold text-gray-900 mb-0 mr-3" th:text="${'Dr. ' + dentist.name + ' ' + dentist.lastName}">Dr. Julian Rodriguez</h4>
+                    <span th:if="${dentist.active}" class="badge badge-success badge-pill px-3 py-1 text-uppercase">Activo</span>
+                    <span th:unless="${dentist.active}" class="badge badge-secondary badge-pill px-3 py-1 text-uppercase">Inactivo</span>
+                </div>
+                <div class="mb-3">
+                    <!-- GENERAL -->
+                    <span class="badge badge-light border border-primary text-primary badge-pill px-3 py-2 font-weight-bold"
+                          th:if="${dentist.specialty.name() == 'GENERAL'}">
+                        Odontología General
+                    </span>
+                    <!-- ORTHONDONTICS -->
+                    <span class="badge badge-light border border-primary text-primary badge-pill px-3 py-2 font-weight-bold"
+                          th:if="${dentist.specialty.name() == 'ORTHODONTICS'}">
+                        Ortodoncia
+                    </span>
+                    <!-- PERIODONTICS -->
+                    <span class="badge badge-light border border-primary text-primary badge-pill px-3 py-2 font-weight-bold"
+                          th:if="${dentist.specialty.name() == 'PERIODONTICS'}">
+                        Periodoncia
+                    </span>
+                    <!-- ENDODONTICS -->
+                    <span class="badge badge-light border border-primary text-primary badge-pill px-3 py-2 font-weight-bold"
+                          th:if="${dentist.specialty.name() == 'ENDODONTICS'}">
+                        Endodoncia
+                    </span>
+                    <!-- PEDIATRIC -->
+                    <span class="badge badge-light border border-primary text-primary badge-pill px-3 py-2 font-weight-bold"
+                          th:if="${dentist.specialty.name() == 'PEDIATRIC'}">
+                        Odontopediatría
+                    </span>
+                    <!-- ORAL_SURGERY -->
+                    <span class="badge badge-light border border-primary text-primary badge-pill px-3 py-2 font-weight-bold"
+                          th:if="${dentist.specialty.name() == 'ORAL_SURGERY'}">
+                        Cirugía Oral
+                    </span>
+                    <!-- PROSTHODONTICS -->
+                    <span class="badge badge-light border border-primary text-primary badge-pill px-3 py-2 font-weight-bold"
+                          th:if="${dentist.specialty.name() == 'PROSTHODONTICS'}">
+                        Prótesis Dental
+                    </span>
+                    <!-- IMPLANTOLOGY -->
+                    <span class="badge badge-light border border-primary text-primary badge-pill px-3 py-2 font-weight-bold"
+                          th:if="${dentist.specialty.name() == 'IMPLANTOLOGY'}">
+                        Implantología
+                    </span>
+                </div>
+                <p class="text-muted small mb-0">
+                    Profesional de la salud registrado en la clínica dental.
+                </p>
+            </div>
+        </div>
+
+        <!-- Personal Data -->
+        <div class="d-flex align-items-center mb-3">
+            <h6 class="text-primary font-weight-bold text-uppercase m-0" style="font-size: 0.85rem; letter-spacing: 0.05em;">Datos Personales</h6>
+            <div class="flex-grow-1 border-bottom ml-3"></div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <p class="text-xs font-weight-bold text-gray-500 text-uppercase mb-1">DNI</p>
+                <p class="h6 font-weight-bold text-gray-800" th:text="${dentist.dni}">32.455.901</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <p class="text-xs font-weight-bold text-gray-500 text-uppercase mb-1">Fecha de Nacimiento</p>
+                <p class="h6 font-weight-bold text-gray-800" th:text="${#temporals.format(dentist.birthDate, 'dd MMM yyyy')}">12 Mayo 1985</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <p class="text-xs font-weight-bold text-gray-500 text-uppercase mb-1">Email</p>
+                <p class="h6 font-weight-bold text-gray-800" th:text="${dentist.email}">j.rodriguez@auradental.com</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <p class="text-xs font-weight-bold text-gray-500 text-uppercase mb-1">Teléfono</p>
+                <p class="h6 font-weight-bold text-gray-800" th:text="${dentist.phone ?: '-'}">+54 11 4590-2231</p>
+            </div>
+            <div class="col-md-8 mb-3">
+                <p class="text-xs font-weight-bold text-gray-500 text-uppercase mb-1">Dirección</p>
+                <p class="h6 font-weight-bold text-gray-800" th:text="${dentist.address ?: '-'}">Av. Santa Fe 2450</p>
+            </div>
+        </div>
+
+        <!-- Professional Data -->
+        <div class="d-flex align-items-center mb-3">
+            <h6 class="text-primary font-weight-bold text-uppercase m-0" style="font-size: 0.85rem; letter-spacing: 0.05em;">Datos Profesionales</h6>
+            <div class="flex-grow-1 border-bottom ml-3"></div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-4 mb-3">
+                <p class="text-xs font-weight-bold text-gray-500 text-uppercase mb-1">Matrícula Profesional</p>
+                <p class="h6 font-weight-bold text-gray-800" th:text="${dentist.licenseNumber}">MP-99420-B</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <p class="text-xs font-weight-bold text-gray-500 text-uppercase mb-1">Fecha de Contratación</p>
+                <p class="h6 font-weight-bold text-gray-800" th:text="${#temporals.format(dentist.hireDate, 'dd MMM yyyy')}">01 Febrero 2018</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer bg-light border-top-0 d-flex justify-content-between">
+        <a th:href="@{/admin/dentists/{id}/schedule(id=${dentist.id})}" class="btn btn-outline-primary font-weight-bold">
+            <i class="far fa-calendar-alt mr-2"></i> Gestionar horario
+        </a>
+        <button type="button" class="btn btn-primary font-weight-bold shadow-sm px-4" data-dismiss="modal">
+            Cerrar
+        </button>
+    </div>
+</div>
