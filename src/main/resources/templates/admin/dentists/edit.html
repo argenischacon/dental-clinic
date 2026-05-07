@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Editar Odontólogo - Clínica Dental</title>
+</head>
+<body>
+
+    <!-- ==================== SIDEBAR NAV ITEMS ==================== -->
+    <div layout:fragment="nav-items">
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Gestión
+        </div>
+
+        <!-- Nav Item - Dentists (ACTIVE) -->
+        <li class="nav-item active">
+            <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseDentists"
+               aria-expanded="true" aria-controls="collapseDentists">
+                <i class="fas fa-fw fa-user-md"></i>
+                <span>Odontólogos</span>
+            </a>
+            <div id="collapseDentists" class="collapse show" aria-labelledby="headingDentists"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Opciones:</h6>
+                    <a class="collapse-item active" th:href="@{/admin/dentists/list}">Ver Odontólogos</a>
+                    <a class="collapse-item" th:href="@{/admin/dentists/add}">Agregar Odontólogo</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- Nav Item - Receptionists -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReceptionists"
+               aria-expanded="true" aria-controls="collapseReceptionists">
+                <i class="fas fa-fw fa-user-tie"></i>
+                <span>Recepcionistas</span>
+            </a>
+            <div id="collapseReceptionists" class="collapse" aria-labelledby="headingReceptionists"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Opciones:</h6>
+                    <a class="collapse-item" th:href="@{/admin/receptionists/list}">Ver Recepcionistas</a>
+                    <a class="collapse-item" th:href="@{/admin/receptionists/add}">Agregar Recepcionista</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- Nav Item - Services -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseServices"
+               aria-expanded="true" aria-controls="collapseServices">
+                <i class="fas fa-fw fa-briefcase-medical"></i>
+                <span>Servicios</span>
+            </a>
+            <div id="collapseServices" class="collapse" aria-labelledby="headingServices"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Opciones:</h6>
+                    <a class="collapse-item" th:href="@{/admin/services/list}">Ver Servicios</a>
+                    <a class="collapse-item" th:href="@{/admin/services/add}">Agregar Servicio</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Reportes
+        </div>
+
+        <!-- Nav Item - Reports -->
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/admin/reports}">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Generar Reportes</span>
+            </a>
+        </li>
+
+    </div>
+    <!-- ==================== END SIDEBAR NAV ITEMS ==================== -->
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <div layout:fragment="content">
+        <!--/*@thymesVar id="dentistRequestDto" type="com.argenischacon.dentalclinic.dto.dentist.DentistRequestDto"*/-->
+
+        <!-- Page Heading -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h1 class="h3 mb-1 text-gray-800">Editar Odontólogo</h1>
+                <p class="mb-0 text-gray-600 small">Modificá los datos del profesional. Los cambios se guardarán de inmediato.</p>
+            </div>
+            <a th:href="@{/admin/dentists/list}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+                <i class="fas fa-arrow-left fa-sm text-white-50 mr-1"></i> Volver a la lista
+            </a>
+        </div>
+
+        <!-- Form -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Editar Información del Profesional</h6>
+            </div>
+
+            <div class="card-body px-4 py-5">
+
+                <!-- Global alerts (server errors) -->
+                <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+
+                <!-- Edit Form -->
+                <form th:action="@{/admin/dentists/edit/{id}(id=${dentistId})}"
+                      th:object="${dentistRequestDto}"
+                      method="post">
+
+                    <!-- ********** SECTION 01: PERSONAL DATA ********** -->
+                    <div class="d-flex align-items-center mb-4">
+                        <span class="badge badge-primary rounded-circle p-2 d-flex align-items-center justify-content-center mr-2"
+                              style="width: 32px; height: 32px;">01</span>
+                        <h5 class="font-weight-bold text-gray-800 m-0">Datos Personales</h5>
+                    </div>
+
+                    <div class="form-row">
+                        <!-- First Name -->
+                        <div class="form-group col-md-4 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1"
+                                   for="nameInput">Nombre</label>
+                            <input type="text"
+                                   class="form-control bg-light border-0"
+                                   id="nameInput"
+                                   th:field="*{name}"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"
+                                   placeholder="Ej: Julian">
+                            <div class="invalid-feedback"
+                                 th:if="${#fields.hasErrors('name')}"
+                                 th:errors="*{name}">Error en nombre</div>
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="form-group col-md-4 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1"
+                                   for="lastNameInput">Apellido</label>
+                            <input type="text"
+                                   class="form-control bg-light border-0"
+                                   id="lastNameInput"
+                                   th:field="*{lastName}"
+                                   th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'"
+                                   placeholder="Ej: Rodriguez">
+                            <div class="invalid-feedback"
+                                 th:if="${#fields.hasErrors('lastName')}"
+                                 th:errors="*{lastName}">Error en apellido</div>
+                        </div>
+
+                        <!-- DNI -->
+                        <div class="form-group col-md-4 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1"
+                                   for="dniInput">DNI</label>
+                            <input type="text"
+                                   class="form-control bg-light border-0"
+                                   id="dniInput"
+                                   th:field="*{dni}"
+                                   th:classappend="${#fields.hasErrors('dni')} ? 'is-invalid'"
+                                   placeholder="8 dígitos sin puntos"
+                                   maxlength="20">
+                            <div class="invalid-feedback"
+                                 th:if="${#fields.hasErrors('dni')}"
+                                 th:errors="*{dni}">Error en DNI</div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <!-- Date of Birth -->
+                        <div class="form-group col-md-4 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1"
+                                   for="birthDateInput">Fecha de Nacimiento</label>
+                            <input type="date"
+                                   class="form-control bg-light border-0"
+                                   id="birthDateInput"
+                                   th:field="*{birthDate}"
+                                   th:classappend="${#fields.hasErrors('birthDate')} ? 'is-invalid'">
+                            <div class="invalid-feedback"
+                                 th:if="${#fields.hasErrors('birthDate')}"
+                                 th:errors="*{birthDate}">Error en fecha de nacimiento</div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group col-md-8 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1"
+                                   for="emailInput">Email</label>
+                            <input type="email"
+                                   class="form-control bg-light border-0"
+                                   id="emailInput"
+                                   th:field="*{email}"
+                                   th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
+                                   placeholder="profesional@clinica.com"
+                                   maxlength="60">
+                            <div class="invalid-feedback"
+                                 th:if="${#fields.hasErrors('email')}"
+                                 th:errors="*{email}">Error en email</div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <!-- Phone -->
+                        <div class="form-group col-md-4 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1"
+                                   for="phoneInput">Teléfono</label>
+                            <input type="tel"
+                                   class="form-control bg-light border-0"
+                                   id="phoneInput"
+                                   th:field="*{phone}"
+                                   th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'"
+                                   placeholder="+54 9 11 ...">
+                            <div class="invalid-feedback"
+                                 th:if="${#fields.hasErrors('phone')}"
+                                 th:errors="*{phone}">Error en teléfono</div>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="form-group col-md-8 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1"
+                                   for="addressInput">Dirección</label>
+                            <input type="text"
+                                   class="form-control bg-light border-0"
+                                   id="addressInput"
+                                   th:field="*{address}"
+                                   th:classappend="${#fields.hasErrors('address')} ? 'is-invalid'"
+                                   placeholder="Calle, Número, Piso/Depto, Ciudad"
+                                   maxlength="255">
+                            <div class="invalid-feedback"
+                                 th:if="${#fields.hasErrors('address')}"
+                                 th:errors="*{address}">Error en dirección</div>
+                        </div>
+                    </div>
+
+                    <!-- DNI Warning Alert -->
+                    <div class="alert alert-warning d-flex align-items-start mt-2 mb-5 border-left-warning small"
+                         role="alert" style="background-color: #fff8e1; color: #856404;">
+                        <i class="fas fa-exclamation-triangle fa-lg mr-3 mt-1"></i>
+                        <div>
+                            Si modificás el <strong>DNI</strong>, el <strong>usuario de acceso</strong> del profesional
+                            se actualizará automáticamente. Además, si el dentista aún no cambió su contraseña,
+                            ésta será restablecida al nuevo DNI.
+                        </div>
+                    </div>
+
+                    <!-- ********** SECTION 02: PROFESSIONAL DATA ********** -->
+                    <div class="d-flex align-items-center mb-4">
+                        <span class="badge badge-primary rounded-circle p-2 d-flex align-items-center justify-content-center mr-2"
+                              style="width: 32px; height: 32px;">02</span>
+                        <h5 class="font-weight-bold text-gray-800 m-0">Datos Profesionales</h5>
+                    </div>
+
+                    <div class="form-row">
+                        <!-- Professional License -->
+                        <div class="form-group col-md-4 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1"
+                                   for="licenseInput">Matrícula Profesional</label>
+                            <input type="text"
+                                   class="form-control bg-light border-0"
+                                   id="licenseInput"
+                                   th:field="*{licenseNumber}"
+                                   th:classappend="${#fields.hasErrors('licenseNumber')} ? 'is-invalid'"
+                                   placeholder="MP-00000"
+                                   maxlength="20">
+                            <div class="invalid-feedback"
+                                 th:if="${#fields.hasErrors('licenseNumber')}"
+                                 th:errors="*{licenseNumber}">Error en matrícula</div>
+                        </div>
+
+                        <!-- Specialty -->
+                        <div class="form-group col-md-4 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1"
+                                   for="specialtyInput">Especialidad</label>
+                            <select class="form-control bg-light border-0"
+                                    id="specialtyInput"
+                                    th:field="*{specialty}"
+                                    th:classappend="${#fields.hasErrors('specialty')} ? 'is-invalid'">
+                                <option disabled value="">Seleccione especialidad</option>
+                                <option value="GENERAL">Odontología General</option>
+                                <option value="ORTHODONTICS">Ortodoncia</option>
+                                <option value="PERIODONTICS">Periodoncia</option>
+                                <option value="ENDODONTICS">Endodoncia</option>
+                                <option value="PEDIATRIC">Odontopediatría</option>
+                                <option value="ORAL_SURGERY">Cirugía Oral</option>
+                                <option value="PROSTHODONTICS">Prótesis Dental</option>
+                                <option value="IMPLANTOLOGY">Implantología</option>
+                            </select>
+                            <div class="invalid-feedback"
+                                 th:if="${#fields.hasErrors('specialty')}"
+                                 th:errors="*{specialty}">Error en especialidad</div>
+                        </div>
+
+                        <!-- Hire Date -->
+                        <div class="form-group col-md-4 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1"
+                                   for="hireDateInput">Fecha de Contratación</label>
+                            <input type="date"
+                                   class="form-control bg-light border-0"
+                                   id="hireDateInput"
+                                   th:field="*{hireDate}"
+                                   th:classappend="${#fields.hasErrors('hireDate')} ? 'is-invalid'">
+                            <div class="invalid-feedback"
+                                 th:if="${#fields.hasErrors('hireDate')}"
+                                 th:errors="*{hireDate}">Error en fecha de contratación</div>
+                        </div>
+                    </div>
+
+                    <!-- Divider and Action Buttons -->
+                    <hr class="mt-4 mb-4">
+
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a th:href="@{/admin/dentists/list}"
+                           class="btn btn-link text-gray-600 font-weight-bold mr-3 text-decoration-none">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4 py-2 font-weight-bold shadow-sm">
+                            <i class="fas fa-save mr-2"></i>Guardar Cambios
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <!-- ==================== END MAIN CONTENT ==================== -->
+
+</body>
+</html>

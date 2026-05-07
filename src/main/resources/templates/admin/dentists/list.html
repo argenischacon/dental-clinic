@@ -490,10 +490,14 @@
                                         <form th:if="${dentist.active}"
                                               th:action="@{/admin/dentists/deactivate/{id}(id=${dentist.id})}"
                                               method="post" class="d-inline"
-                                              onsubmit="return confirm('¿Desactivar este odontólogo?')">
-                                            <button type="submit"
+                                              th:id="'form-' + ${dentist.id}">
+                                            <button type="button"
                                                     class="btn btn-outline-danger btn-action"
-                                                    title="Desactivar">
+                                                    title="Desactivar"
+                                                    th:attr="data-form-id='form-' + ${dentist.id},
+                                                             data-action='desactivar',
+                                                             data-name=${dentist.name + ' ' + dentist.lastName}"
+                                                    onclick="confirmToggle(this)">
                                                 <i class="fas fa-ban fa-xs"></i>
                                             </button>
                                         </form>
@@ -502,10 +506,14 @@
                                         <form th:unless="${dentist.active}"
                                               th:action="@{/admin/dentists/activate/{id}(id=${dentist.id})}"
                                               method="post" class="d-inline"
-                                              onsubmit="return confirm('¿Activar este odontólogo?')">
-                                            <button type="submit"
+                                              th:id="'form-' + ${dentist.id}">
+                                            <button type="button"
                                                     class="btn btn-outline-success btn-action"
-                                                    title="Activar">
+                                                    title="Activar"
+                                                    th:attr="data-form-id='form-' + ${dentist.id},
+                                                             data-action='activar',
+                                                             data-name=${dentist.name + ' ' + dentist.lastName}"
+                                                    onclick="confirmToggle(this)">
                                                 <i class="fas fa-check fa-xs"></i>
                                             </button>
                                         </form>
@@ -600,6 +608,31 @@
               showConfirmButton: false,
               timer: 2000
             });
+        </script>
+
+        <!-- SweetAlert2 confirmation for activate/deactivate -->
+        <script>
+            function confirmToggle(btn) {
+                const formId  = btn.dataset.formId;
+                const action  = btn.dataset.action;
+                const name    = btn.dataset.name;
+                const isDeactivate = action === 'desactivar';
+                Swal.fire({
+                    title: action.charAt(0).toUpperCase() + action.slice(1) + ' odont\u00f3logo',
+                    html: 'El odont\u00f3logo <strong>' + name + '</strong> ser\u00e1 '
+                        + (isDeactivate ? 'desactivado y sus horarios cancelados' : 'reactivado') + '.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: isDeactivate ? '#e74a3b' : '#1cc88a',
+                    cancelButtonColor: '#858796',
+                    confirmButtonText: 'S\u00ed, ' + action,
+                    cancelButtonText: 'Cancelar'
+                }).then(function(result) {
+                    if (result.isConfirmed) {
+                        document.getElementById(formId).submit();
+                    }
+                });
+            }
         </script>
 
         <!-- ===== MODAL: VIEW DENTIST DETAILS ===== -->

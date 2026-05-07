@@ -52,15 +52,20 @@ public class AdminController {
     @PostMapping("/dentists/save")
     public String saveDentist(@Valid @ModelAttribute DentistRequestDto dentistRequestDto,
                               BindingResult result,
+                              Model model,
                               RedirectAttributes redirectAttributes) {
 
         if (result.hasErrors()) {
             return "admin/dentists/add";
         }
 
-        dentistService.dentistAdd(dentistRequestDto);
-
-        redirectAttributes.addFlashAttribute("success", "El odontólogo ha sido registrado exitosamente.");
+        try {
+            dentistService.dentistAdd(dentistRequestDto);
+            redirectAttributes.addFlashAttribute("success", "El odontólogo ha sido registrado exitosamente.");
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            return "admin/dentists/add";
+        }
 
         return "redirect:/admin/dentists/list";
     }
@@ -69,5 +74,47 @@ public class AdminController {
     public String getDentistDetailModal(@PathVariable Long id, Model model, ServletResponse servletResponse) {
         model.addAttribute("dentist", dentistService.findById(id));
         return "admin/dentists/_detail :: modal-content";
+    }
+
+    @GetMapping("/dentists/edit/{id}")
+    public String dentistEditPage(@PathVariable Long id, Model model) {
+        model.addAttribute("dentistRequestDto", dentistService.getDentistForEdit(id));
+        model.addAttribute("dentistId", id);
+        return "admin/dentists/edit";
+    }
+
+    @PostMapping("/dentists/edit/{id}")
+    public String updateDentist(@PathVariable Long id,
+                                @Valid @ModelAttribute DentistRequestDto dentistRequestDto,
+                                BindingResult result,
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            model.addAttribute("dentistId", id);
+            return "admin/dentists/edit";
+        }
+        try {
+            dentistService.updateDentist(id, dentistRequestDto);
+            redirectAttributes.addFlashAttribute("success", "Odontólogo actualizado exitosamente.");
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("dentistId", id);
+            return "admin/dentists/edit";
+        }
+        return "redirect:/admin/dentists/list";
+    }
+
+    @PostMapping("/dentists/activate/{id}")
+    public String activateDentist(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        dentistService.activateDentist(id);
+        redirectAttributes.addFlashAttribute("success", "Odontólogo activado exitosamente.");
+        return "redirect:/admin/dentists/list";
+    }
+
+    @PostMapping("/dentists/deactivate/{id}")
+    public String deactivateDentist(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        dentistService.deactivateDentist(id);
+        redirectAttributes.addFlashAttribute("success", "Odontólogo desactivado exitosamente.");
+        return "redirect:/admin/dentists/list";
     }
 }
