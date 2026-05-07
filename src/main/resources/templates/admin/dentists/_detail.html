@@ -18,7 +18,7 @@
                  th:style="${'width: 100px; height: 100px; font-size: 2.5rem; background-color: ' + (dentist.active ? '#4e73df' : '#858796')}">
                 <span th:text="${#strings.substring(dentist.name,0,1) + #strings.substring(dentist.lastName,0,1)}">DR</span>
             </div>
-            
+
             <div class="flex-grow-1 pt-2">
                 <div class="d-flex align-items-center mb-2">
                     <h4 class="font-weight-bold text-gray-900 mb-0 mr-3" th:text="${'Dr. ' + dentist.name + ' ' + dentist.lastName}">Dr. Julian Rodriguez</h4>
@@ -27,43 +27,35 @@
                 </div>
                 <div class="mb-3">
                     <!-- GENERAL -->
-                    <span class="badge badge-light border border-primary text-primary badge-pill px-3 py-2 font-weight-bold"
-                          th:if="${dentist.specialty.name() == 'GENERAL'}">
+                    <span th:if="${dentist.specialty.name() == 'GENERAL'}" class="badge-specialty" style="background-color:#dbeafe; color:#1d4ed8;">
                         Odontología General
                     </span>
-                    <!-- ORTHONDONTICS -->
-                    <span class="badge badge-light border border-primary text-primary badge-pill px-3 py-2 font-weight-bold"
-                          th:if="${dentist.specialty.name() == 'ORTHODONTICS'}">
+                    <!-- ORTHODONTICS -->
+                    <span th:if="${dentist.specialty.name() == 'ORTHODONTICS'}" class="badge-specialty" style="background-color:#ede9fe; color:#6d28d9;">
                         Ortodoncia
                     </span>
                     <!-- PERIODONTICS -->
-                    <span class="badge badge-light border border-primary text-primary badge-pill px-3 py-2 font-weight-bold"
-                          th:if="${dentist.specialty.name() == 'PERIODONTICS'}">
+                    <span th:if="${dentist.specialty.name() == 'PERIODONTICS'}" class="badge-specialty" style="background-color:#fce7f3; color:#be185d;">
                         Periodoncia
                     </span>
                     <!-- ENDODONTICS -->
-                    <span class="badge badge-light border border-primary text-primary badge-pill px-3 py-2 font-weight-bold"
-                          th:if="${dentist.specialty.name() == 'ENDODONTICS'}">
+                    <span th:if="${dentist.specialty.name() == 'ENDODONTICS'}" class="badge-specialty" style="background-color:#ccfbf1; color:#0f766e;">
                         Endodoncia
                     </span>
                     <!-- PEDIATRIC -->
-                    <span class="badge badge-light border border-primary text-primary badge-pill px-3 py-2 font-weight-bold"
-                          th:if="${dentist.specialty.name() == 'PEDIATRIC'}">
+                    <span th:if="${dentist.specialty.name() == 'PEDIATRIC'}" class="badge-specialty" style="background-color:#ffedd5; color:#c2410c;">
                         Odontopediatría
                     </span>
                     <!-- ORAL_SURGERY -->
-                    <span class="badge badge-light border border-primary text-primary badge-pill px-3 py-2 font-weight-bold"
-                          th:if="${dentist.specialty.name() == 'ORAL_SURGERY'}">
+                    <span th:if="${dentist.specialty.name() == 'ORAL_SURGERY'}" class="badge-specialty" style="background-color:#fee2e2; color:#b91c1c;">
                         Cirugía Oral
                     </span>
                     <!-- PROSTHODONTICS -->
-                    <span class="badge badge-light border border-primary text-primary badge-pill px-3 py-2 font-weight-bold"
-                          th:if="${dentist.specialty.name() == 'PROSTHODONTICS'}">
+                    <span th:if="${dentist.specialty.name() == 'PROSTHODONTICS'}" class="badge-specialty" style="background-color:#fef9c3; color:#a16207;">
                         Prótesis Dental
                     </span>
                     <!-- IMPLANTOLOGY -->
-                    <span class="badge badge-light border border-primary text-primary badge-pill px-3 py-2 font-weight-bold"
-                          th:if="${dentist.specialty.name() == 'IMPLANTOLOGY'}">
+                    <span th:if="${dentist.specialty.name() == 'IMPLANTOLOGY'}" class="badge-specialty" style="background-color:#f0fdf4; color:#15803d;">
                         Implantología
                     </span>
                 </div>
