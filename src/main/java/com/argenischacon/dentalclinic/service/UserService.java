@@ -1,6 +1,7 @@
 package com.argenischacon.dentalclinic.service;
 
 import com.argenischacon.dentalclinic.dto.user.ChangePasswordRequest;
+import com.argenischacon.dentalclinic.exception.BusinessRuleException;
 import com.argenischacon.dentalclinic.model.User;
 import com.argenischacon.dentalclinic.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,7 +18,7 @@ public class UserService {
 
     public void changePassword(Long userId, ChangePasswordRequest request) {
         if (!request.newPassword().equals(request.confirmPassword())) {
-            throw new IllegalArgumentException("Las contraseñas no coinciden.");
+            throw new BusinessRuleException("Las contraseñas no coinciden.");
         }
 
         User user = userRepository.findByIdAndActiveTrue(userId)

@@ -10,6 +10,7 @@ import com.argenischacon.dentalclinic.model.Dentist;
 import com.argenischacon.dentalclinic.model.User;
 import com.argenischacon.dentalclinic.repository.DentistRepository;
 import com.argenischacon.dentalclinic.specification.DentistSpecification;
+import com.argenischacon.dentalclinic.exception.BusinessRuleException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,15 +32,15 @@ public class DentistService {
     public void dentistAdd(DentistRequestDto dto) {
 
         if (dentistRepository.findByDni(dto.dni()).isPresent()) {
-            throw new IllegalArgumentException("El DNI ya está registrado en el sistema");
+            throw new BusinessRuleException("El DNI ya está registrado en el sistema");
         }
 
         if (dentistRepository.findByEmail(dto.email()).isPresent()) {
-            throw new IllegalArgumentException("El email ya está en uso");
+            throw new BusinessRuleException("El email ya está en uso");
         }
 
         if (dentistRepository.findByLicenseNumber(dto.licenseNumber()).isPresent()) {
-            throw new IllegalArgumentException("El número de licencia ya está registrado en el sistema");
+            throw new BusinessRuleException("El número de licencia ya está registrado en el sistema");
         }
 
         Dentist dentist = dentistMapper.toEntity(dto);
@@ -86,13 +87,13 @@ public class DentistService {
         dentistRepository.findByEmail(dto.email())
                 .filter(d -> !d.getId().equals(id))
                 .ifPresent(d -> {
-                    throw new IllegalArgumentException("El email ya está en uso por otro odontólogo.");
+                    throw new BusinessRuleException("El email ya está en uso por otro odontólogo.");
                 });
 
         dentistRepository.findByLicenseNumber(dto.licenseNumber())
                 .filter(d -> !d.getId().equals(id))
                 .ifPresent(d -> {
-                    throw new IllegalArgumentException("El número de licencia ya está registrado en el sistema");
+                    throw new BusinessRuleException("El número de licencia ya está registrado en el sistema");
                 });
 
         boolean dniChanged = !dentist.getDni().equals(dto.dni());
@@ -100,7 +101,7 @@ public class DentistService {
 
             dentistRepository.findByDni(dto.dni())
                     .ifPresent(d -> {
-                        throw new IllegalArgumentException("El DNI ya está registrado en el sistema.");
+                        throw new BusinessRuleException("El DNI ya está registrado en el sistema.");
                     });
 
             dentist.getUser().setUsername(dto.dni());

@@ -1,6 +1,7 @@
 package com.argenischacon.dentalclinic.controller;
 
 import com.argenischacon.dentalclinic.dto.dentist.DentistRequestDto;
+import com.argenischacon.dentalclinic.exception.BusinessRuleException;
 import com.argenischacon.dentalclinic.service.DentistService;
 import jakarta.servlet.ServletResponse;
 import jakarta.validation.Valid;
@@ -62,7 +63,7 @@ public class AdminController {
         try {
             dentistService.dentistAdd(dentistRequestDto);
             redirectAttributes.addFlashAttribute("success", "El odontólogo ha sido registrado exitosamente.");
-        } catch (IllegalArgumentException e) {
+        } catch (BusinessRuleException e) {
             model.addAttribute("error", e.getMessage());
             return "admin/dentists/add";
         }
@@ -96,7 +97,7 @@ public class AdminController {
         try {
             dentistService.updateDentist(id, dentistRequestDto);
             redirectAttributes.addFlashAttribute("success", "Odontólogo actualizado exitosamente.");
-        } catch (IllegalArgumentException e) {
+        } catch (BusinessRuleException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("dentistId", id);
             return "admin/dentists/edit";
