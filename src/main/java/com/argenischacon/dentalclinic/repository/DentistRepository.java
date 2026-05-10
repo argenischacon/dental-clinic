@@ -17,4 +17,7 @@ public interface DentistRepository extends JpaRepository<Dentist, Long>, JpaSpec
     Page<Dentist> findAllByActiveTrue(Pageable pageable);
     Optional<Dentist> findByIdAndActiveTrue(Long id);
     Page<Dentist> findAllByActiveFalse(Pageable pageable);
+
+    long countByActiveTrue();
+    long countByActiveFalse();
 }

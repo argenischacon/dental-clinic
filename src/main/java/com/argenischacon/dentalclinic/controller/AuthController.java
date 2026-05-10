@@ -1,6 +1,7 @@
 package com.argenischacon.dentalclinic.controller;
 
 import com.argenischacon.dentalclinic.dto.user.ChangePasswordRequest;
+import com.argenischacon.dentalclinic.exception.BusinessRuleException;
 import com.argenischacon.dentalclinic.security.CustomUserDetails;
 import com.argenischacon.dentalclinic.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,7 +60,7 @@ public class AuthController {
             userService.changePassword(userDetails.getUser().getId(), changePasswordRequest);
             new SecurityContextLogoutHandler().logout(request, response, authentication);
             return "redirect:/login?passwordChanged";
-        } catch (IllegalArgumentException e) {
+        } catch (BusinessRuleException e) {
             model.addAttribute("error", e.getMessage());
             return "auth/change-password";
         }
