@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Clínica Dental</title>
+</head>
+<body>
+
+    <th:block layout:fragment="nav-items">
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Recepción
+        </div>
+    
+        <!-- Nav Item - Appointments -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="fas fa-fw fa-calendar-check"></i>
+                <span>Citas</span>
+            </a>
+        </li>
+
+        <!-- Nav Item - Billing -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="fas fa-fw fa-file-invoice-dollar"></i>
+                <span>Facturación</span>
+            </a>
+        </li>
+    </th:block>
+
+    <div layout:fragment="content"></div>
+    
+    <th:block layout:fragment="scripts"></th:block>
+</body>
+</html>

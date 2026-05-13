@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Clínica Dental</title>
+</head>
+<body>
+
+    <div layout:fragment="nav-items">
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Gestión
+        </div>
+    
+        <!-- Nav Item - Dentists Collapse Menu -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDentists" aria-expanded="true"
+                aria-controls="collapseDentists">
+                <i class="fas fa-fw fa-user-md"></i>
+                <span>Odontólogos</span>
+            </a>
+            <div id="collapseDentists" class="collapse" aria-labelledby="headingDentists" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Opciones:</h6>
+                    <a class="collapse-item" th:href="@{/admin/dentists/list}">Ver Odontólogos</a>
+                    <a class="collapse-item" th:href="@{/admin/dentists/add}">Agregar Odontólogo</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- Nav Item - Receptionists Collapse Menu -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReceptionists" aria-expanded="true"
+                aria-controls="collapseReceptionists">
+                <i class="fas fa-fw fa-user-tie"></i>
+                <span>Recepcionistas</span>
+            </a>
+            <div id="collapseReceptionists" class="collapse" aria-labelledby="headingReceptionists" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Opciones:</h6>
+                    <a class="collapse-item" th:href="@{/admin/receptionists/list}">Ver Recepcionistas</a>
+                    <a class="collapse-item" th:href="@{/admin/receptionists/add}">Agregar Recepcionista</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- Nav Item - Services Collapse Menu -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseServices" aria-expanded="true"
+                aria-controls="collapseServices">
+                <i class="fas fa-fw fa-briefcase-medical"></i>
+                <span>Servicios</span>
+            </a>
+            <div id="collapseServices" class="collapse" aria-labelledby="headingServices" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Opciones:</h6>
+                    <a class="collapse-item" th:href="@{/admin/services/list}">Ver Servicios</a>
+                    <a class="collapse-item" th:href="@{/admin/services/add}">Agregar Servicio</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Reportes
+        </div>
+
+        <!-- Nav Item - Reports -->
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/admin/reports}">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Generar Reportes</span>
+            </a>
+        </li>
+    </div>
+
+    <div layout:fragment="content"></div>
+
+    <th:block layout:fragment="scripts"></th:block>
+
+</body>
+</html>
