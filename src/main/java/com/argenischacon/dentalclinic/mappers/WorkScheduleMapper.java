@@ -15,7 +15,6 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface WorkScheduleMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "available", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "dentist", ignore = true)
@@ -34,7 +33,6 @@ public interface WorkScheduleMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "available", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "dentist", ignore = true)

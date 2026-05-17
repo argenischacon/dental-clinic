@@ -1,0 +1,167 @@
+<th:block th:fragment="tabs" th:object="${scheduleForm}">
+    <th:block th:if="*{dentistId != null}">
+        <!-- Slot Duration -->
+        <div class="col-md-6 mb-3">
+            <label for="slotDurationMinutes" class="font-weight-bold text-gray-800 small"> Duración de slots</label>
+            <div class="input-group">
+                <select th:field="*{slotDurationMinutes}" class="custom-select" name="slotDurationMinutes" id="slotDurationMinutes" required>
+                    <option value="15">15 minutos</option>
+                    <option value="30">30 minutos</option>
+                    <option value="45">45 minutos</option>
+                    <option value="60">60 minutos</option>
+                </select>
+                <div class="input-group-append">
+                    <span class="input-group-text">
+                        <i class="fas fa-clock text-gray-500"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!--Tabs Navigation-->
+        <div class="col-md-12 mt-3"
+             th:with="days=${{'MONDAY':'Lunes', 'TUESDAY':'Martes', 'WEDNESDAY':'Miércoles', 'THURSDAY':'Jueves', 'FRIDAY':'Viernes', 'SATURDAY':'Sábado', 'SUNDAY':'Domingo'} }">
+            <label class="font-weight-bold text-gray-800 small d-block mb-3">
+                Días de la semana
+            </label>
+
+            <!--Tab for each day of the week-->
+            <ul class="nav nav-pills mb-2" id="daysTab" role="tablist">
+                <li class="nav-item mr-2 mb-2" role="presentation" th:each="day, stat : ${days}">
+                    <button class="nav-link px-4 shadow-sm border-0"
+                            th:classappend="${stat.first ? 'active' : ''}"
+                            th:id="|${day.key.toLowerCase()}-tab|"
+                            data-bs-toggle="tab"
+                            th:data-bs-target="|#${day.key.toLowerCase()}-pane|"
+                            type="button" role="tab"
+                            th:aria-controls="${day.key.toLowerCase() + '-pane'}"
+                            th:aria-selected="${stat.first}"
+                            th:text="${day.value}">Lunes
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Block: Tabs Content (Daily forms) -->
+        <div class="col-md-12 mt-3">
+            <div class="tab-content"
+                 id="daysTabContent"
+                 th:with="days=${ {'MONDAY':'Lunes', 'TUESDAY':'Martes', 'WEDNESDAY':'Miércoles',
+                         'THURSDAY':'Jueves', 'FRIDAY':'Viernes', 'SATURDAY':'Sábado', 'SUNDAY':'Domingo'} }">
+
+                <div th:each="day, stat : ${days}"
+                     class="tab-pane fade"
+                     th:classappend="${stat.first ? 'show active' : ''}"
+                     th:id="|${day.key.toLowerCase()}-pane|"
+                     role="tabpanel"
+                     th:aria-labelledby="|${day.key.toLowerCase()}-tab|"
+                     tabindex="0">
+
+                    <div class="card shadow mb-4 border-left-success">
+                        <div class="card-header py-3 bg-light d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <i class="far fa-calendar-alt text-success mr-2"></i>
+                                <h6 class="m-0 font-weight-bold text-success">Horario del día</h6>
+                                <span class="small text-success ml-2 font-weight-bold" th:text="|- ${day.value}|">— Lunes</span>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-5 mb-4 mb-md-0 border-right pr-md-4">
+                                    <div class="row">
+                                        <div class="col-6 mb-4">
+                                            <label class="font-weight-bold text-uppercase text-muted small">Hora inicio</label>
+                                            <input th:field="*{schedules[__${day.key}__].startTime}" type="time"
+                                                   class="form-control"
+                                                   th:id="|startTime_${day.key}|"
+                                                   th:name="|startTime_${day.key}|"
+                                                   hx-post="/admin/schedules/preview"
+                                                   th:hx-target="|#preview-container-${day.key.toLowerCase()}|"
+                                                   hx-trigger="change" hx-include="#scheduleForm">
+                                        </div>
+                                        <div class="col-6 mb-4">
+                                            <label class="font-weight-bold text-uppercase text-muted small">Hora fin</label>
+                                            <input th:field="*{schedules[__${day.key}__].endTime}" type="time"
+                                                   class="form-control"
+                                                   th:id="|endTime_${day.key}|"
+                                                   th:name="|endTime_${day.key}|"
+                                                   hx-post="/admin/schedules/preview"
+                                                   th:hx-target="|#preview-container-${day.key.toLowerCase()}|"
+                                                   hx-trigger="change" hx-include="#scheduleForm">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="font-weight-bold text-gray-800 small">Disponible</label>
+                                        <div class="d-flex mt-1">
+                                            <div class="custom-control custom-radio mr-4">
+                                                <input th:field="*{schedules[__${day.key}__].available}" type="radio"
+                                                       th:id="|availTrue_${day.key}|"
+                                                       value="true"
+                                                       class="custom-control-input">
+                                                <label class="custom-control-label cursor-pointer"
+                                                       th:for="|availTrue_${day.key}|">Sí</label>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input th:field="*{schedules[__${day.key}__].available}" type="radio"
+                                                       th:id="|availFalse_${day.key}|"
+                                                       value="false"
+                                                       class="custom-control-input">
+                                                <label class="custom-control-label cursor-pointer"
+                                                       th:for="|availFalse_${day.key}|">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-7 pl-md-4">
+                                    <label class="font-weight-bold text-gray-800 small">Descansos / Breaks</label>
+                                    <p class="small text-muted mb-2">Los descansos configurados se excluyen
+                                        automáticamente de la vista previa.</p>
+                                    <div class="mb-3 mt-1" th:id="|breaks-list-${day.key.toLowerCase()}|">
+                                        <div class="text-center py-3 text-muted small border rounded bg-light">
+                                            <i class="fas fa-coffee fa-lg mb-2 d-block text-gray-400"></i>
+                                            Aún no hay descansos configurados para este día.
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-secondary btn-block py-2"
+                                            style="border-style: dashed; border-width: 2px;" data-toggle="modal"
+                                            data-target="#addBreakModal" th:data-day="${day.key}">
+                                        <i class="fas fa-plus-circle mr-2"></i> Agregar break
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Preview-->
+                        <div th:id="|preview-container-${day.key.toLowerCase()}|">
+                            <div class="card-footer bg-light p-4">
+                                <div class="alert alert-secondary d-flex align-items-center py-2 px-3 mb-0 small" role="alert">
+                                    <i class="fas fa-info-circle mr-3 fa-lg"></i>
+                                    <div><strong>Vista previa:</strong> Completa la hora de inicio, fin y duración
+                                        para visualizar los bloques de atención disponibles.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!--Buttons-->
+                <div class="d-flex justify-content-end mb-4 bg-white p-3 border-top rounded shadow-sm">
+                    <a href="/admin/schedules/assign"
+                       class="btn btn-outline-secondary font-weight-bold mr-3 px-4 py-2">Cancelar</a>
+                    <button type="submit" class="btn btn-primary font-weight-bold px-4 py-2 shadow-sm">
+                        Guardar horario
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </th:block>
+    <th:block th:unless="*{dentistId != null}">
+        <div class="col-md-12 mb-3 mt-4 text-center">
+            <p class="text-muted"><i class="fas fa-arrow-up mr-2"></i>Seleccione un odontólogo para configurar su horario.</p>
+        </div>
+    </th:block>
+</th:block>
