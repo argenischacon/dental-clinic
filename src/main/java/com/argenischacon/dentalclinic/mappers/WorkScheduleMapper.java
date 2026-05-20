@@ -12,13 +12,11 @@ import org.mapstruct.Mapping;
 public interface WorkScheduleMapper {
     WorkScheduleResponseDto toResponseDto(WorkSchedule entity);
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "workSchedule", ignore = true)
     ScheduleBreak toBreakEntity(ScheduleBreakDto dto);
     
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "workSchedule", ignore = true)

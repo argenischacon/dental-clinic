@@ -16,6 +16,8 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Builder
 public class ScheduleBreakFormDto {
+    private Long id;
+
     @NotNull(message = "La hora de inicio del descanso es obligatoria")
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime startBreak;

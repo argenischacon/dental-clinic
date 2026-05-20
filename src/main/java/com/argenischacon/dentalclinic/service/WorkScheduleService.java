@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.argenischacon.dentalclinic.dto.schedule.DailyScheduleFormDto;
 import com.argenischacon.dentalclinic.dto.schedule.ScheduleBreakFormDto;
 import com.argenischacon.dentalclinic.exception.BusinessRuleException;
-import com.argenischacon.dentalclinic.model.ScheduleBreak;
 import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
@@ -61,6 +60,7 @@ public class WorkScheduleService {
                 if (dbRecord.breaks() != null) {
                     List<ScheduleBreakFormDto> breakForms = dbRecord.breaks().stream()
                             .map(b -> ScheduleBreakFormDto.builder()
+                                    .id(b.id())
                                     .startBreak(b.startBreak())
                                     .endBreak(b.endBreak())
                                     .label(b.label())
@@ -108,14 +108,41 @@ public class WorkScheduleService {
         schedule.setSlotDurationMinutes(slotDurationMinutes);
         schedule.setAvailable(true);
 
-        schedule.getBreaks().clear();
-        if (dailyDto.getBreaks() != null) {
-            dailyDto.getBreaks().forEach(bDto -> {
-                schedule.addBreak(workScheduleMapper.toBreakEntity(bDto));
-            });
-        }
+        updateBreaks(schedule, dailyDto.getBreaks());
 
         workScheduleRepository.save(schedule);
+    }
+
+    private void updateBreaks(WorkSchedule schedule, List<ScheduleBreakFormDto> incomingBreaks) {
+        if (incomingBreaks == null || incomingBreaks.isEmpty()) {
+            schedule.getBreaks().clear();
+            return;
+        }
+
+        // 1. Extract IDs from incoming breaks
+        java.util.Set<Long> incomingIds = incomingBreaks.stream()
+                .map(ScheduleBreakFormDto::getId)
+                .filter(java.util.Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        // 2. Remove existing breaks that are not in the incoming list
+        schedule.getBreaks().removeIf(b -> b.getId() != null && !incomingIds.contains(b.getId()));
+
+        // 3. Update existing or add new ones
+        for (ScheduleBreakFormDto bDto : incomingBreaks) {
+            if (bDto.getId() != null) {
+                schedule.getBreaks().stream()
+                        .filter(b -> bDto.getId().equals(b.getId()))
+                        .findFirst()
+                        .ifPresent(existingBreak -> {
+                            existingBreak.setStartBreak(bDto.getStartBreak());
+                            existingBreak.setEndBreak(bDto.getEndBreak());
+                            existingBreak.setLabel(bDto.getLabel());
+                        });
+            } else {
+                schedule.addBreak(workScheduleMapper.toBreakEntity(bDto));
+            }
+        }
     }
 
     private void processUnavailableDay(Dentist dentist, DayOfWeek dayOfWeek, DailyScheduleFormDto dailyDto, int slotDurationMinutes, Optional<WorkSchedule> existingOpt) {

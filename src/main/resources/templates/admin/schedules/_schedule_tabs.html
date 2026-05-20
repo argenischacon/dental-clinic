@@ -139,6 +139,7 @@
                                                 <button type="button" class="btn btn-sm btn-outline-danger border-0 delete-break-btn" title="Eliminar">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
+                                                <input type="hidden" class="break-id" th:name="|schedules[${day.key}].breaks[${stat.index}].id|" th:value="${break.id}" />
                                                 <input type="hidden" class="break-start" th:name="|schedules[${day.key}].breaks[${stat.index}].startBreak|" th:value="${break.startBreak}" />
                                                 <input type="hidden" class="break-end" th:name="|schedules[${day.key}].breaks[${stat.index}].endBreak|" th:value="${break.endBreak}" />
                                                 <input type="hidden" class="break-label" th:name="|schedules[${day.key}].breaks[${stat.index}].label|" th:value="${break.label}" />

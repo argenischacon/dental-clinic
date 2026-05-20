@@ -127,6 +127,7 @@
             <button type="button" class="btn btn-sm btn-outline-danger border-0 delete-break-btn" title="Eliminar">
                 <i class="fas fa-trash-alt"></i>
             </button>
+            <input type="hidden" class="break-id" name="schedules[{DAY}].breaks[{INDEX}].id" value="" />
             <input type="hidden" class="break-start" name="schedules[{DAY}].breaks[{INDEX}].startBreak" value="{START}" />
             <input type="hidden" class="break-end" name="schedules[{DAY}].breaks[{INDEX}].endBreak" value="{END}" />
             <input type="hidden" class="break-label" name="schedules[{DAY}].breaks[{INDEX}].label" value="{LABEL}" />
@@ -212,10 +213,12 @@
                 const items = breakListContainer.querySelectorAll('.break-item');
                 
                 items.forEach((item, index) => {
+                    const idInput = item.querySelector('.break-id');
                     const startInput = item.querySelector('.break-start');
                     const endInput = item.querySelector('.break-end');
                     const labelInput = item.querySelector('.break-label');
                     
+                    if (idInput) idInput.name = `schedules[${dayKey}].breaks[${index}].id`;
                     startInput.name = `schedules[${dayKey}].breaks[${index}].startBreak`;
                     endInput.name = `schedules[${dayKey}].breaks[${index}].endBreak`;
                     labelInput.name = `schedules[${dayKey}].breaks[${index}].label`;
