@@ -6,8 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -23,4 +27,8 @@ public class DailyScheduleFormDto {
     private LocalTime endTime;
 
     private boolean available;
+
+    @Valid
+    @Size(max = 3, message = "Un horario puede tener máximo 3 descansos")
+    private List<ScheduleBreakFormDto> breaks = new ArrayList<>();
 }

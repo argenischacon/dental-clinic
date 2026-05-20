@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.argenischacon.dentalclinic.dto.schedule.DailyScheduleFormDto;
+import com.argenischacon.dentalclinic.dto.schedule.ScheduleBreakFormDto;
 import com.argenischacon.dentalclinic.exception.BusinessRuleException;
+import com.argenischacon.dentalclinic.model.ScheduleBreak;
 import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
@@ -56,10 +58,23 @@ public class WorkScheduleService {
                 dailyDto.setStartTime(dbRecord.startTime());
                 dailyDto.setEndTime(dbRecord.endTime());
                 dailyDto.setAvailable(dbRecord.available());
+                if (dbRecord.breaks() != null) {
+                    List<ScheduleBreakFormDto> breakForms = dbRecord.breaks().stream()
+                            .map(b -> ScheduleBreakFormDto.builder()
+                                    .startBreak(b.startBreak())
+                                    .endBreak(b.endBreak())
+                                    .label(b.label())
+                                    .build())
+                            .collect(Collectors.toList());
+                    dailyDto.setBreaks(breakForms);
+                } else {
+                    dailyDto.getBreaks().clear();
+                }
             } else {
                 dailyDto.setStartTime(null);
                 dailyDto.setEndTime(null);
                 dailyDto.setAvailable(false);
+                dailyDto.getBreaks().clear();
             }
         });
     }
@@ -93,6 +108,13 @@ public class WorkScheduleService {
         schedule.setSlotDurationMinutes(slotDurationMinutes);
         schedule.setAvailable(true);
 
+        schedule.getBreaks().clear();
+        if (dailyDto.getBreaks() != null) {
+            dailyDto.getBreaks().forEach(bDto -> {
+                schedule.addBreak(workScheduleMapper.toBreakEntity(bDto));
+            });
+        }
+
         workScheduleRepository.save(schedule);
     }
 
@@ -105,6 +127,7 @@ public class WorkScheduleService {
                 schedule.setEndTime(dailyDto.getEndTime());
             }
             schedule.setSlotDurationMinutes(slotDurationMinutes);
+            schedule.getBreaks().clear();
             workScheduleRepository.save(schedule);
         } else if (dailyDto.getStartTime() != null && dailyDto.getEndTime() != null) {
             WorkSchedule schedule = WorkSchedule.builder()
@@ -125,6 +148,16 @@ public class WorkScheduleService {
         }
         if (dailyDto.getStartTime().isAfter(dailyDto.getEndTime()) || dailyDto.getStartTime().equals(dailyDto.getEndTime())) {
             throw new BusinessRuleException("La hora de inicio debe ser anterior a la hora de fin.");
+        }
+        if (dailyDto.getBreaks() != null && dailyDto.getBreaks().size() > 3) {
+            throw new BusinessRuleException("Un horario puede tener máximo 3 descansos.");
+        }
+        if (dailyDto.getBreaks() != null) {
+            for (ScheduleBreakFormDto breakDto : dailyDto.getBreaks()) {
+                if (breakDto.getStartBreak().isAfter(breakDto.getEndBreak()) || breakDto.getStartBreak().equals(breakDto.getEndBreak())) {
+                    throw new BusinessRuleException("La hora de inicio del descanso (" + breakDto.getLabel() + ") debe ser anterior a la hora de fin.");
+                }
+            }
         }
     }
 }

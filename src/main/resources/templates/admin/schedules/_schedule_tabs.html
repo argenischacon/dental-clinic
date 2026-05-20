@@ -118,9 +118,31 @@
                                     <p class="small text-muted mb-2">Los descansos configurados se excluyen
                                         automáticamente de la vista previa.</p>
                                     <div class="mb-3 mt-1" th:id="|breaks-list-${day.key.toLowerCase()}|">
-                                        <div class="text-center py-3 text-muted small border rounded bg-light">
+                                        <div th:if="${#lists.isEmpty(scheduleForm.schedules[__${day.key}__].breaks)}"
+                                             class="text-center py-3 text-muted small border rounded bg-light empty-breaks-msg">
                                             <i class="fas fa-coffee fa-lg mb-2 d-block text-gray-400"></i>
                                             Aún no hay descansos configurados para este día.
+                                        </div>
+                                        <div th:if="${not #lists.isEmpty(scheduleForm.schedules[__${day.key}__].breaks)}" 
+                                             class="text-center py-3 text-muted small border rounded bg-light empty-breaks-msg" style="display: none;">
+                                            <i class="fas fa-coffee fa-lg mb-2 d-block text-gray-400"></i>
+                                            Aún no hay descansos configurados para este día.
+                                        </div>
+
+                                        <div th:each="break, stat : *{schedules[__${day.key}__].breaks}" class="break-item card shadow-sm mb-2 border-left-warning">
+                                            <div class="card-body p-2 d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <i class="fas fa-mug-hot text-warning mr-2"></i>
+                                                    <strong class="text-gray-800 break-label-text" th:text="${break.label}">Descanso</strong>
+                                                    <span class="text-muted small ml-2 break-time-text" th:text="|${break.startBreak} - ${break.endBreak}|">12:00 - 13:00</span>
+                                                </div>
+                                                <button type="button" class="btn btn-sm btn-outline-danger border-0 delete-break-btn" title="Eliminar">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                                <input type="hidden" class="break-start" th:name="|schedules[${day.key}].breaks[${stat.index}].startBreak|" th:value="${break.startBreak}" />
+                                                <input type="hidden" class="break-end" th:name="|schedules[${day.key}].breaks[${stat.index}].endBreak|" th:value="${break.endBreak}" />
+                                                <input type="hidden" class="break-label" th:name="|schedules[${day.key}].breaks[${stat.index}].label|" th:value="${break.label}" />
+                                            </div>
                                         </div>
                                     </div>
                                     <button type="button" class="btn btn-outline-secondary btn-block py-2"
