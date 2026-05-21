@@ -105,8 +105,6 @@ public class WorkScheduleService {
     }
 
     private void processAvailableDay(Dentist dentist, DayOfWeek dayOfWeek, DailyScheduleFormDto dailyDto, int slotDurationMinutes, Optional<WorkSchedule> existingOpt) {
-        validateScheduleTimes(dailyDto);
-
         WorkSchedule schedule = existingOpt.orElseGet(() -> WorkSchedule.builder()
                 .dentist(dentist)
                 .dayOfWeek(dayOfWeek)
@@ -178,22 +176,4 @@ public class WorkScheduleService {
         }
     }
 
-    private void validateScheduleTimes(DailyScheduleFormDto dailyDto) {
-        if (dailyDto.getStartTime() == null || dailyDto.getEndTime() == null) {
-            throw new BusinessRuleException("Para días disponibles, la hora de inicio y fin son obligatorias.");
-        }
-        if (dailyDto.getStartTime().isAfter(dailyDto.getEndTime()) || dailyDto.getStartTime().equals(dailyDto.getEndTime())) {
-            throw new BusinessRuleException("La hora de inicio debe ser anterior a la hora de fin.");
-        }
-        if (dailyDto.getBreaks() != null && dailyDto.getBreaks().size() > 3) {
-            throw new BusinessRuleException("Un horario puede tener máximo 3 descansos.");
-        }
-        if (dailyDto.getBreaks() != null) {
-            for (ScheduleBreakFormDto breakDto : dailyDto.getBreaks()) {
-                if (breakDto.getStartBreak().isAfter(breakDto.getEndBreak()) || breakDto.getStartBreak().equals(breakDto.getEndBreak())) {
-                    throw new BusinessRuleException("La hora de inicio del descanso (" + breakDto.getLabel() + ") debe ser anterior a la hora de fin.");
-                }
-            }
-        }
-    }
 }

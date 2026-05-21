@@ -6,6 +6,7 @@ import com.argenischacon.dentalclinic.service.DentistService;
 import com.argenischacon.dentalclinic.service.WorkScheduleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import com.argenischacon.dentalclinic.exception.BusinessRuleException;
 
 @Controller
@@ -42,7 +45,10 @@ public class AdminScheduleController {
                                RedirectAttributes redirectAttributes) {
 
         if(bindingResult.hasErrors()){
-            model.addAttribute("error", "Por favor, revise los datos del formulario.");
+            String errorMsg = bindingResult.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.joining("<br>"));
+            model.addAttribute("error", errorMsg);
             return "admin/schedules/assign";
         }
 

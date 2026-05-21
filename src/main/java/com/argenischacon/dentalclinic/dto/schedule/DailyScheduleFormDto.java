@@ -1,5 +1,6 @@
 package com.argenischacon.dentalclinic.dto.schedule;
 
+import jakarta.validation.constraints.AssertTrue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,4 +33,20 @@ public class DailyScheduleFormDto {
     @Valid
     @Size(max = 3, message = "Un horario puede tener máximo 3 descansos")
     private List<ScheduleBreakFormDto> breaks = new ArrayList<>();
+
+    @AssertTrue(message = "Para días disponibles, la hora de inicio y fin son obligatorias.")
+    public boolean isTimePresentIfAvailable() {
+        if (available) {
+            return startTime != null && endTime != null;
+        }
+        return true;
+    }
+
+    @AssertTrue(message = "La hora de inicio debe ser anterior a la hora de fin.")
+    public boolean isValidTimeRange() {
+        if (!available || startTime == null || endTime == null) {
+            return true;
+        }
+        return startTime.isBefore(endTime);
+    }
 }

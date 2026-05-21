@@ -1,5 +1,6 @@
 package com.argenischacon.dentalclinic.dto.schedule;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -29,4 +30,12 @@ public class ScheduleBreakFormDto {
     @NotBlank(message = "La etiqueta del descanso es obligatoria")
     @Size(max = 50, message = "La etiqueta no puede exceder 50 caracteres")
     private String label;
+
+    @AssertTrue(message = "La hora de inicio del descanso debe ser anterior a la hora de fin.")
+    public boolean isValidTimeRange() {
+        if (startBreak == null || endBreak == null) {
+            return true;
+        }
+        return startBreak.isBefore(endBreak);
+    }
 }
