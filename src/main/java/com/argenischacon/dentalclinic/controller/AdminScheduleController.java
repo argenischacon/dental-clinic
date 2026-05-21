@@ -3,6 +3,7 @@ package com.argenischacon.dentalclinic.controller;
 import com.argenischacon.dentalclinic.dto.schedule.AssignScheduleFormDto;
 import com.argenischacon.dentalclinic.dto.dentist.DentistNestedDto;
 import com.argenischacon.dentalclinic.dto.schedule.DailyScheduleFormDto;
+import com.argenischacon.dentalclinic.dto.schedule.PreviewItemDto;
 import com.argenischacon.dentalclinic.model.TimeSlot;
 import com.argenischacon.dentalclinic.service.DentistService;
 import com.argenischacon.dentalclinic.service.WorkScheduleService;
@@ -97,10 +98,9 @@ public class AdminScheduleController {
             return "admin/schedules/_preview_fragment :: preview";
         }
 
-        List<TimeSlot> slots = workScheduleService.calculatePreviewSlots(dailyDto, scheduleForm.getSlotDurationMinutes());
+        List<PreviewItemDto> items = workScheduleService.generateChronologicalPreview(dailyDto, scheduleForm.getSlotDurationMinutes());
         
-        model.addAttribute("slots", slots);
-        model.addAttribute("breaks", dailyDto.getBreaks());
+        model.addAttribute("items", items);
         model.addAttribute("day", day);
         return "admin/schedules/_preview_fragment :: preview";
     }

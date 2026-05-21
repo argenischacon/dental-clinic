@@ -1,7 +1,6 @@
 package com.argenischacon.dentalclinic.service;
 
-import com.argenischacon.dentalclinic.dto.schedule.AssignScheduleFormDto;
-import com.argenischacon.dentalclinic.dto.schedule.WorkScheduleResponseDto;
+import com.argenischacon.dentalclinic.dto.schedule.*;
 import com.argenischacon.dentalclinic.mappers.WorkScheduleMapper;
 import com.argenischacon.dentalclinic.model.Dentist;
 import com.argenischacon.dentalclinic.model.ScheduleBreak;
@@ -13,13 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.argenischacon.dentalclinic.dto.schedule.DailyScheduleFormDto;
-import com.argenischacon.dentalclinic.dto.schedule.ScheduleBreakFormDto;
 import com.argenischacon.dentalclinic.exception.BusinessRuleException;
 import java.time.DayOfWeek;
-import java.util.List;
-import java.util.Optional;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -199,4 +194,24 @@ public class WorkScheduleService {
         return tempSchedule.getAvailableSlots(slotDurationMinutes);
     }
 
+    public List<PreviewItemDto> generateChronologicalPreview(DailyScheduleFormDto dailyDto, int slotDurationMinutes) {
+        List<TimeSlot> availableSlots = calculatePreviewSlots(dailyDto, slotDurationMinutes);
+        
+        List<PreviewItemDto> items = new ArrayList<>();
+        
+        for (TimeSlot slot : availableSlots) {
+            items.add(new PreviewItemDto(slot.getStart(), slot.getEnd(), false, "Disponible"));
+        }
+        
+        if (dailyDto.getBreaks() != null) {
+            for (ScheduleBreakFormDto bDto : dailyDto.getBreaks()) {
+                if (bDto.getStartBreak() != null && bDto.getEndBreak() != null) {
+                    items.add(new PreviewItemDto(bDto.getStartBreak(), bDto.getEndBreak(), true, bDto.getLabel()));
+                }
+            }
+        }
+        
+        Collections.sort(items);
+        return items;
+    }
 }
