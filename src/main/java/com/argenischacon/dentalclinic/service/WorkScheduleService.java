@@ -4,6 +4,8 @@ import com.argenischacon.dentalclinic.dto.schedule.AssignScheduleFormDto;
 import com.argenischacon.dentalclinic.dto.schedule.WorkScheduleResponseDto;
 import com.argenischacon.dentalclinic.mappers.WorkScheduleMapper;
 import com.argenischacon.dentalclinic.model.Dentist;
+import com.argenischacon.dentalclinic.model.ScheduleBreak;
+import com.argenischacon.dentalclinic.model.TimeSlot;
 import com.argenischacon.dentalclinic.model.WorkSchedule;
 import com.argenischacon.dentalclinic.repository.DentistRepository;
 import com.argenischacon.dentalclinic.repository.WorkScheduleRepository;
@@ -174,6 +176,27 @@ public class WorkScheduleService {
                     .build();
             workScheduleRepository.save(schedule);
         }
+    }
+
+    public List<TimeSlot> calculatePreviewSlots(DailyScheduleFormDto dailyDto, int slotDurationMinutes) {
+        WorkSchedule tempSchedule = WorkSchedule.builder()
+                .startTime(dailyDto.getStartTime())
+                .endTime(dailyDto.getEndTime())
+                .slotDurationMinutes(slotDurationMinutes)
+                .build();
+
+        if (dailyDto.getBreaks() != null) {
+            dailyDto.getBreaks().forEach(bDto -> {
+                ScheduleBreak tempBreak = ScheduleBreak.builder()
+                        .startBreak(bDto.getStartBreak())
+                        .endBreak(bDto.getEndBreak())
+                        .label(bDto.getLabel())
+                        .build();
+                tempSchedule.addBreak(tempBreak);
+            });
+        }
+
+        return tempSchedule.getAvailableSlots(slotDurationMinutes);
     }
 
 }
