@@ -3,10 +3,10 @@ package com.argenischacon.dentalclinic.controller;
 import com.argenischacon.dentalclinic.dto.schedule.AssignScheduleFormDto;
 import com.argenischacon.dentalclinic.dto.dentist.DentistNestedDto;
 import com.argenischacon.dentalclinic.dto.schedule.DailyScheduleFormDto;
-import com.argenischacon.dentalclinic.dto.schedule.ScheduleBreakFormDto;
 import com.argenischacon.dentalclinic.model.TimeSlot;
 import com.argenischacon.dentalclinic.service.DentistService;
 import com.argenischacon.dentalclinic.service.WorkScheduleService;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.DayOfWeek;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.argenischacon.dentalclinic.exception.BusinessRuleException;
@@ -29,6 +30,7 @@ public class AdminScheduleController {
 
     private final DentistService dentistService;
     private final WorkScheduleService workScheduleService;
+    private final jakarta.validation.Validator validator;
 
     @ModelAttribute("dentists")
     public List<DentistNestedDto> getActiveDentists() {
@@ -85,19 +87,13 @@ public class AdminScheduleController {
             return "admin/schedules/_preview_fragment :: preview";
         }
 
-        if (!dailyDto.isTimePresentIfAvailable() || !dailyDto.isValidTimeRange()) {
-            model.addAttribute("previewError", "La hora de inicio y fin son obligatorias y la hora de inicio debe ser anterior a la de fin.");
-            return "admin/schedules/_preview_fragment :: preview";
-        }
-
-        boolean validBreaks = true;
-        if (dailyDto.getBreaks() != null) {
-            validBreaks = dailyDto.getBreaks().stream()
-                .allMatch(ScheduleBreakFormDto::isValidTimeRange);
-        }
+        Set<ConstraintViolation<DailyScheduleFormDto>> violations = validator.validate(dailyDto);
         
-        if (!validBreaks) {
-            model.addAttribute("previewError", "Los descansos tienen horas inválidas.");
+        if (!violations.isEmpty()) {
+            String errorMsg = violations.stream()
+                    .map(ConstraintViolation::getMessage)
+                    .collect(Collectors.joining("<br>"));
+            model.addAttribute("previewError", errorMsg);
             return "admin/schedules/_preview_fragment :: preview";
         }
 

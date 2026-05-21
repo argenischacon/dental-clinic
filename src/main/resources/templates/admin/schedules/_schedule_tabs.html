@@ -155,7 +155,7 @@
                                     <button type="button" class="btn btn-primary px-4 py-2 preview-btn"
                                             th:hx-post="|/admin/schedules/preview?day=${day.key}|"
                                             th:hx-target="|#preview-container-${day.key.toLowerCase()}|"
-                                            hx-include="#scheduleForm">
+                                            hx-include="closest .tab-pane, #slotDurationMinutes">
                                         <i class="fas fa-eye mr-2"></i> Generar vista previa
                                     </button>
                                 </div>
