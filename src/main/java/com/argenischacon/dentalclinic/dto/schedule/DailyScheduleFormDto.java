@@ -18,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class DailyScheduleFormDto {
+    private Long id;
     private DayOfWeek dayOfWeek;
 
     @DateTimeFormat (pattern = "HH:mm")

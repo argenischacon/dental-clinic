@@ -31,12 +31,13 @@
                     <button class="nav-link px-4 shadow-sm border-0"
                             th:classappend="${stat.first ? 'active' : ''}"
                             th:id="|${day.key.toLowerCase()}-tab|"
-                            data-bs-toggle="tab"
-                            th:data-bs-target="|#${day.key.toLowerCase()}-pane|"
+                            data-toggle="tab"
+                            th:data-target="|#${day.key.toLowerCase()}-pane|"
                             type="button" role="tab"
                             th:aria-controls="${day.key.toLowerCase() + '-pane'}"
-                            th:aria-selected="${stat.first}"
-                            th:text="${day.value}">Lunes
+                            th:aria-selected="${stat.first}">
+                        <span th:text="${day.value}">Lunes</span>
+                        <i th:if="*{schedules[__${day.key}__].id != null}" class="fas fa-check-circle text-success ml-1" title="Día configurado"></i>
                     </button>
                 </li>
             </ul>
@@ -67,6 +68,7 @@
                         </div>
 
                         <div class="card-body">
+                            <input type="hidden" th:field="*{schedules[__${day.key}__].id}" />
                             <div class="row">
                                 <div class="col-md-5 mb-4 mb-md-0 border-right pr-md-4">
                                     <div class="row">

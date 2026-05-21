@@ -54,6 +54,7 @@ public class WorkScheduleService {
         scheduleForm.getSchedules().forEach((day, dailyDto) -> {
             WorkScheduleResponseDto dbRecord = dbSchedules.get(day);
             if (dbRecord != null) {
+                dailyDto.setId(dbRecord.id());
                 dailyDto.setStartTime(dbRecord.startTime());
                 dailyDto.setEndTime(dbRecord.endTime());
                 dailyDto.setAvailable(dbRecord.available());
@@ -71,6 +72,7 @@ public class WorkScheduleService {
                     dailyDto.getBreaks().clear();
                 }
             } else {
+                dailyDto.setId(null);
                 dailyDto.setStartTime(null);
                 dailyDto.setEndTime(null);
                 dailyDto.setAvailable(false);
@@ -81,6 +83,13 @@ public class WorkScheduleService {
 
     @Transactional
     public void saveDentistSchedule(AssignScheduleFormDto dto) {
+        boolean hasAtLeastOneAvailableDay = dto.getSchedules().values().stream()
+                .anyMatch(DailyScheduleFormDto::isAvailable);
+
+        if (!hasAtLeastOneAvailableDay) {
+            throw new BusinessRuleException("Debe configurar al menos un día disponible para guardar el horario de trabajo.");
+        }
+
         Dentist dentist = dentistRepository.findById(dto.getDentistId())
                 .orElseThrow(() -> new BusinessRuleException("Odontólogo no encontrado"));
 
