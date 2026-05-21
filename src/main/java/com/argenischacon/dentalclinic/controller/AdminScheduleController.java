@@ -3,6 +3,7 @@ package com.argenischacon.dentalclinic.controller;
 import com.argenischacon.dentalclinic.dto.schedule.AssignScheduleFormDto;
 import com.argenischacon.dentalclinic.dto.dentist.DentistNestedDto;
 import com.argenischacon.dentalclinic.dto.schedule.DailyScheduleFormDto;
+import com.argenischacon.dentalclinic.dto.schedule.DailyScheduleViewDto;
 import com.argenischacon.dentalclinic.dto.schedule.PreviewItemDto;
 import com.argenischacon.dentalclinic.service.DentistService;
 import com.argenischacon.dentalclinic.service.WorkScheduleService;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.DayOfWeek;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,6 +56,21 @@ public class AdminScheduleController {
         scheduleForm.setDentistId(dentistId);
         workScheduleService.populateScheduleForm(scheduleForm);
         return "admin/schedules/assign";
+    }
+
+    @GetMapping("/view")
+    public String viewSchedulePage(Model model) {
+        return "admin/schedules/view";
+    }
+
+    @GetMapping("/view/table")
+    public String getScheduleTable(@RequestParam(name = "dentistId", required = false) Long dentistId, Model model) {
+        if (dentistId != null && dentistService.existsById(dentistId)) {
+            Map<DayOfWeek, DailyScheduleViewDto> weeklySchedule = workScheduleService.getWeeklyScheduleView(dentistId);
+            model.addAttribute("weeklySchedule", weeklySchedule);
+            model.addAttribute("dentistId", dentistId);
+        }
+        return "admin/schedules/_view_table :: scheduleTable";
     }
 
     @PostMapping("/assign")

@@ -1,0 +1,80 @@
+<!-- Empty State when no dentist is selected or invalid ID -->
+<div th:fragment="scheduleTable" th:if="${weeklySchedule == null}">
+    <div class="text-center text-muted py-5">
+        <i class="fas fa-hand-pointer fa-3x mb-3 text-gray-300"></i>
+        <p>Seleccione un odontólogo para ver su horario.</p>
+    </div>
+</div>
+
+<!-- Populated Table State -->
+<div th:fragment="scheduleTable" th:if="${weeklySchedule != null}" class="mt-4 fade-in">
+    
+    <!-- Legend & Actions -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <div class="d-flex align-items-center flex-wrap">
+            <span class="badge badge-success px-3 py-2 mr-2 shadow-sm"><i class="far fa-clock mr-1"></i> Disponible</span>
+            <span class="badge badge-warning text-dark px-3 py-2 mx-2 shadow-sm"><i class="fas fa-mug-hot mr-1"></i> Break</span>
+            <span class="badge bg-light text-muted border px-3 py-2 mx-2 shadow-sm"><i class="fas fa-moon mr-1"></i> No trabaja</span>
+        </div>
+        
+        <div>
+            <!-- Dynamically points to the assign view for THIS specific dentist -->
+            <a th:href="@{/admin/schedules/assign/{id}(id=${dentistId})}" class="btn btn-outline-primary px-4 shadow-sm font-weight-bold">
+                <i class="fas fa-edit mr-2"></i> Modificar horario
+            </a>
+        </div>
+    </div>
+
+    <!-- 7 Columns Grid -->
+    <div class="row no-gutters border rounded bg-white shadow-sm overflow-hidden" style="min-height: 400px;"
+         th:with="dayNames=${ {'MONDAY':'Lunes', 'TUESDAY':'Martes', 'WEDNESDAY':'Miércoles', 'THURSDAY':'Jueves', 'FRIDAY':'Viernes', 'SATURDAY':'Sábado', 'SUNDAY':'Domingo'} }">
+        
+        <!-- Day columns loop -->
+        <div th:each="day : ${T(java.time.DayOfWeek).values()}" class="col border-right last-no-border p-2 text-center" style="min-width: 130px;">
+            
+            <!-- Column Header -->
+            <div class="font-weight-bold text-gray-800 mb-1" style="font-size: 1.1rem;" th:text="${dayNames.get(day.name())}">Lunes</div>
+            
+            <!-- Start/End summary if available -->
+            <div th:if="${weeklySchedule.get(day).available()}" class="text-muted small mb-2 font-weight-bold">
+                <span th:text="${weeklySchedule.get(day).startTime()}"></span> - <span th:text="${weeklySchedule.get(day).endTime()}"></span>
+            </div>
+            <div th:unless="${weeklySchedule.get(day).available()}" class="text-muted small mb-2">
+                —
+            </div>
+            
+            <hr class="border-gray-200 mt-1 mb-3">
+            
+            <!-- Items loop (if available) -->
+            <th:block th:if="${weeklySchedule.get(day).available() and not #lists.isEmpty(weeklySchedule.get(day).items())}">
+                <div th:each="item : ${weeklySchedule.get(day).items()}" class="mb-2">
+                    
+                    <!-- Break badge -->
+                    <div th:if="${item.isBreak()}" class="badge badge-warning text-dark w-100 p-2 shadow-sm d-flex justify-content-center align-items-center" style="font-size: 0.9em; min-height: 35px;">
+                        <i class="fas fa-mug-hot mr-2"></i> <span th:text="|${item.start()} - ${item.end()}|"></span>
+                    </div>
+                    
+                    <!-- Available slot badge -->
+                    <div th:unless="${item.isBreak()}" class="badge badge-success w-100 p-2 shadow-sm text-dark d-flex justify-content-center align-items-center bg-success text-white" style="font-size: 0.9em; min-height: 35px; background-color: #1cc88a !important;">
+                        <span th:text="|${item.start()} - ${item.end()}|"></span>
+                    </div>
+                </div>
+            </th:block>
+            
+            <!-- Empty state (No trabaja) -->
+            <th:block th:unless="${weeklySchedule.get(day).available() and not #lists.isEmpty(weeklySchedule.get(day).items())}">
+                <div class="text-muted mt-5 d-flex flex-column align-items-center justify-content-center">
+                    <i class="fas fa-moon mb-2 text-gray-300" style="font-size: 2rem;"></i>
+                    <small class="font-weight-bold text-gray-400">No trabaja</small>
+                </div>
+            </th:block>
+            
+        </div>
+    </div>
+    
+    <style>
+        .last-no-border:last-child { border-right: none !important; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</div>

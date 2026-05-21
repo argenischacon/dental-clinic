@@ -20,7 +20,7 @@
 
         <!--Tabs Navigation-->
         <div class="col-md-12 mt-3"
-             th:with="days=${{'MONDAY':'Lunes', 'TUESDAY':'Martes', 'WEDNESDAY':'Miércoles', 'THURSDAY':'Jueves', 'FRIDAY':'Viernes', 'SATURDAY':'Sábado', 'SUNDAY':'Domingo'} }">
+             th:with="days=${ {'MONDAY':'Lunes', 'TUESDAY':'Martes', 'WEDNESDAY':'Miércoles', 'THURSDAY':'Jueves', 'FRIDAY':'Viernes', 'SATURDAY':'Sábado', 'SUNDAY':'Domingo'} }">
             <label class="font-weight-bold text-gray-800 small d-block mb-3">
                 Días de la semana
             </label>
@@ -190,8 +190,9 @@
         </div>
     </th:block>
     <th:block th:unless="*{dentistId != null}">
-        <div class="col-md-12 mb-3 mt-4 text-center">
-            <p class="text-muted"><i class="fas fa-arrow-up mr-2"></i>Seleccione un odontólogo para configurar su horario.</p>
+        <div class="col-md-12 mb-3 mt-4 text-center text-muted">
+            <i class="fas fa-hand-pointer fa-3x mb-3 text-gray-300"></i>
+            <p>Seleccione un odontólogo para configurar su horario.</p>
         </div>
     </th:block>
 

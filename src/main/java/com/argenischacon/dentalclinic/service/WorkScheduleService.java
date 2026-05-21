@@ -211,7 +211,27 @@ public class WorkScheduleService {
             }
         }
         
-        Collections.sort(items);
+        java.util.Collections.sort(items);
         return items;
+    }
+
+    public Map<DayOfWeek, DailyScheduleViewDto> getWeeklyScheduleView(Long dentistId) {
+        AssignScheduleFormDto form = new AssignScheduleFormDto();
+        form.setDentistId(dentistId);
+        populateScheduleForm(form);
+        
+        Map<DayOfWeek, DailyScheduleViewDto> weeklyView = new EnumMap<>(DayOfWeek.class);
+        
+        for (DayOfWeek day : DayOfWeek.values()) {
+            DailyScheduleFormDto dailyDto = form.getSchedules().get(day);
+            if (dailyDto != null && dailyDto.isAvailable() && dailyDto.getStartTime() != null && dailyDto.getEndTime() != null) {
+                List<PreviewItemDto> items = generateChronologicalPreview(dailyDto, form.getSlotDurationMinutes());
+                weeklyView.put(day, new DailyScheduleViewDto(true, dailyDto.getStartTime(), dailyDto.getEndTime(), items));
+            } else {
+                weeklyView.put(day, new DailyScheduleViewDto(false, null, null, java.util.Collections.emptyList()));
+            }
+        }
+        
+        return weeklyView;
     }
 }
