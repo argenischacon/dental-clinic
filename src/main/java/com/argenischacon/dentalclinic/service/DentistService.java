@@ -136,4 +136,8 @@ public class DentistService {
         dentist.deactivate();
         dentistRepository.save(dentist);
     }
+
+    public boolean existsById(Long id) {
+        return dentistRepository.existsById(id);
+    }
 }

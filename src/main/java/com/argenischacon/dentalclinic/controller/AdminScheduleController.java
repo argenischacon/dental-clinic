@@ -4,7 +4,6 @@ import com.argenischacon.dentalclinic.dto.schedule.AssignScheduleFormDto;
 import com.argenischacon.dentalclinic.dto.dentist.DentistNestedDto;
 import com.argenischacon.dentalclinic.dto.schedule.DailyScheduleFormDto;
 import com.argenischacon.dentalclinic.dto.schedule.PreviewItemDto;
-import com.argenischacon.dentalclinic.model.TimeSlot;
 import com.argenischacon.dentalclinic.service.DentistService;
 import com.argenischacon.dentalclinic.service.WorkScheduleService;
 import jakarta.validation.ConstraintViolation;
@@ -40,6 +39,20 @@ public class AdminScheduleController {
 
     @GetMapping("/assign")
     public String assignSchedulePage(@ModelAttribute(name = "scheduleForm") AssignScheduleFormDto scheduleForm) {
+        return "admin/schedules/assign";
+    }
+
+    @GetMapping("/assign/{dentistId}")
+    public String assignScheduleForDentistPage(@PathVariable Long dentistId,
+                                               @ModelAttribute(name = "scheduleForm") AssignScheduleFormDto scheduleForm,
+                                               RedirectAttributes redirectAttributes) {
+        if (!dentistService.existsById(dentistId)) {
+            redirectAttributes.addFlashAttribute("error", "El odontólogo no existe en el sistema.");
+            return "redirect:/admin/schedules/assign";
+        }
+        
+        scheduleForm.setDentistId(dentistId);
+        workScheduleService.populateScheduleForm(scheduleForm);
         return "admin/schedules/assign";
     }
 
