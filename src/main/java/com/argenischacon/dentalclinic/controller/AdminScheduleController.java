@@ -63,6 +63,21 @@ public class AdminScheduleController {
         return "admin/schedules/view";
     }
 
+    @GetMapping("/view/{dentistId}")
+    public String viewScheduleForDentistPage(@PathVariable Long dentistId,
+                                             Model model,
+                                             RedirectAttributes redirectAttributes) {
+        if(!dentistService.existsById(dentistId)){
+            redirectAttributes.addFlashAttribute("error", "El odontólogo no existe en el sistema.");
+            return "redirect:/admin/shcedules/view";
+        }
+
+        Map<DayOfWeek, DailyScheduleViewDto> weeklySchedule = workScheduleService.getWeeklyScheduleView(dentistId);
+        model.addAttribute("weeklySchedule", weeklySchedule);
+        model.addAttribute("dentistId", dentistId);
+        return "admin/schedules/view";
+    }
+
     @GetMapping("/view/table")
     public String getScheduleTable(@RequestParam(name = "dentistId", required = false) Long dentistId, Model model) {
         if (dentistId != null && dentistService.existsById(dentistId)) {

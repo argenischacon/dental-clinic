@@ -38,7 +38,8 @@
                             <option value="">Seleccione un odontólogo...</option>
                             <option th:each="dentist : ${dentists}"
                                     th:value="${dentist.id}"
-                                    th:text="${dentist.fullName}">Odontólogo</option>
+                                    th:text="${dentist.fullName}"
+                                    th:selected="${dentistId != null and dentistId == dentist.id}">Odontólogo</option>s
                         </select>
                         <div id="table-loader"
                              class="spinner-border spinner-border-sm text-primary ml-3 htmx-indicator"
@@ -50,11 +51,7 @@
             </div>
 
             <div id="schedule-table-container">
-                <!-- HTMX will load _view_table.html here -->
-                <div class="text-center text-muted py-5">
-                    <i class="fas fa-hand-pointer fa-3x mb-3 text-gray-300"></i>
-                    <p>Seleccione un odontólogo para ver su horario.</p>
-                </div>
+                <th:block th:replace="~{admin/schedules/_view_table :: scheduleTable}"></th:block>
             </div>
 
         </div>
