@@ -1,9 +1,6 @@
 package com.argenischacon.dentalclinic.service;
 
-import com.argenischacon.dentalclinic.dto.dentist.DentistListDto;
-import com.argenischacon.dentalclinic.dto.dentist.DentistRequestDto;
-import com.argenischacon.dentalclinic.dto.dentist.DentistResponseDto;
-import com.argenischacon.dentalclinic.dto.dentist.DentistStatsDto;
+import com.argenischacon.dentalclinic.dto.dentist.*;
 import com.argenischacon.dentalclinic.enums.Role;
 import com.argenischacon.dentalclinic.mappers.DentistMapper;
 import com.argenischacon.dentalclinic.model.Dentist;
@@ -19,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -58,6 +57,12 @@ public class DentistService {
     public Page<DentistListDto> findAllDentists(String search, String specialty, Boolean active, Pageable pageable) {
         Specification<Dentist> spec = DentistSpecification.build(search, specialty, active);
         return dentistRepository.findAll(spec, pageable).map(dentistMapper::toListDto);
+    }
+
+    public List<DentistNestedDto> findAllActiveDentists() {
+        return dentistRepository.findAllByActiveTrue().stream()
+                .map(dentistMapper::toNestedDto)
+                .toList();
     }
 
     public DentistStatsDto getStats() {
@@ -130,5 +135,9 @@ public class DentistService {
                 .orElseThrow(() -> new EntityNotFoundException("Odontólogo no encontrado con ID: " + id));
         dentist.deactivate();
         dentistRepository.save(dentist);
+    }
+
+    public boolean existsById(Long id) {
+        return dentistRepository.existsById(id);
     }
 }

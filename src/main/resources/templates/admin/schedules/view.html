@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin_layout}">
+<head>
+    <title>Ver Horario Semanal</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-transparent p-0 mb-2">
+            <li class="breadcrumb-item"><a href="#">Horarios</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Ver Horario</li>
+        </ol>
+    </nav>
+
+    <!-- Page Title and Description -->
+    <h1 class="h3 mb-1 text-gray-800">
+        <i class="far fa-calendar-alt mr-2"></i> Ver horario
+    </h1>
+    <p class="mb-4 text-muted">
+        Consulta la disponibilidad y horarios semanales de los odontólogos.
+    </p>
+
+    <!-- Content Card -->
+    <div class="card shadow mb-4 border-left-primary">
+        <div class="card-body">
+            
+            <div class="row align-items-center mb-4">
+                <div class="col-md-5">
+                    <div class="d-flex align-items-center">
+                        <label class="font-weight-bold text-gray-800 mb-0 mr-3" for="dentistId">
+                            Odontólogo
+                        </label>
+                        <select name="dentistId" id="dentistId" class="custom-select" style="max-width: 300px;"
+                                hx-get="/admin/schedules/view/table" hx-target="#schedule-table-container"
+                                hx-indicator="#table-loader" hx-trigger="change">
+                            <option value="">Seleccione un odontólogo...</option>
+                            <option th:each="dentist : ${dentists}"
+                                    th:value="${dentist.id}"
+                                    th:text="${dentist.fullName}"
+                                    th:selected="${dentistId != null and dentistId == dentist.id}">Odontólogo</option>s
+                        </select>
+                        <div id="table-loader"
+                             class="spinner-border spinner-border-sm text-primary ml-3 htmx-indicator"
+                             role="status">
+                            <span class="sr-only">Cargando...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="schedule-table-container">
+                <th:block th:replace="~{admin/schedules/_view_table :: scheduleTable}"></th:block>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

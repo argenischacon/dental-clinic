@@ -59,21 +59,25 @@
             </div>
         </li>
 
+        <!-- Nav Item - Schedules Collapse Menu -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSchedules" aria-expanded="true"
+                aria-controls="collapseSchedules">
+                <i class="fas fa-fw fa-calendar-alt"></i>
+                <span>Horarios</span>
+            </a>
+            <div id="collapseSchedules" class="collapse" aria-labelledby="headingSchedules" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Opciones:</h6>
+                    <a class="collapse-item" th:href="@{/admin/schedules/assign}">Asignar Horario</a>
+                    <a class="collapse-item" th:href="@{/admin/schedules/view}">Ver Horario</a>
+                </div>
+            </div>
+        </li>
+
         <!-- Divider -->
         <hr class="sidebar-divider">
 
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            Reportes
-        </div>
-
-        <!-- Nav Item - Reports -->
-        <li class="nav-item">
-            <a class="nav-link" th:href="@{/admin/reports}">
-                <i class="fas fa-fw fa-chart-area"></i>
-                <span>Generar Reportes</span>
-            </a>
-        </li>
     </div>
 
     <div layout:fragment="content"></div>

@@ -9,6 +9,8 @@ import java.time.LocalTime;
 
 @Builder
 public record ScheduleBreakDto(
+        Long id,
+
         @NotNull(message = "La hora de inicio del descanso es obligatoria")
         LocalTime startBreak,
 

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin_layout}">
+<head>
+    <title>Práctica de horario</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-transparent p-0 mb-2">
+            <li class="breadcrumb-item"><a href="#">Horarios</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Asignar Horario</li>
+        </ol>
+    </nav>
+
+    <!-- Page Title and Description -->
+    <h1 class="h3 mb-1 text-gray-800">Horario de trabajo</h1>
+    <p class="mb-4 text-muted">
+        Gestiona el horario del profesional.
+    </p>
+
+    <!--Schedule Form-->
+    <form th:action="@{/admin/schedules/assign}" th:object="${scheduleForm}" method="post" id="scheduleForm">
+        <div id="form-content-container">
+            <div id="form-content">
+
+                <!-- Block: General Data Card (Dentist selection and slot duration) -->
+                <div class="card shadow mb-4 border-left-primary">
+                    <div class="card-header py-3 d-flex align-items-center">
+                        <i class="fas fa-info-circle text-primary mr-2"></i>
+                        <h6 class="m-0 font-weight-bold text-primary">Datos generales</h6>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="font-weight-bold text-gray-800 small" for="dentistId">
+                                    Odontólogo
+                                    <div id="form-loader"
+                                         class="spinner-border spinner-border-sm text-primary ml-2 htmx-indicator"
+                                         role="status">
+                                        <span class="sr-only">Cargando...</span>
+                                    </div>
+                                </label>
+                                <select th:field="*{dentistId}" name="dentistId" id="dentistId" class="custom-select" required
+                                        hx-get="/admin/schedules/tabs" hx-target="#schedule-settings-container" hx-indicator="#form-loader"
+                                        hx-trigger="change" hx-include="#scheduleForm">
+                                    <option value="">Seleccione un odontólogo...</option>
+                                    <option th:each="dentist : ${dentists}"
+                                            th:value="${dentist.id}"
+                                            th:text="${dentist.fullName}">Odontólogo</option>
+                                </select>
+                            </div>
+
+                            <div id="schedule-settings-container" style="display: contents;">
+                                <th:block th:replace="~{admin/schedules/_schedule_tabs :: tabs}"></th:block>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Block: Add Break Modal -->
+    <div class="modal fade" id="addBreakModal" tabindex="-1" role="dialog" aria-labelledby="addBreakModalLabel"
+         aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-weight-bold" id="addBreakModalLabel">
+                    <i class="fas fa-coffee mr-2 text-warning"></i>Agregar descanso
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body py-4">
+                <input type="hidden" id="modalDayKey" value="" />
+                
+                <div class="form-group mb-3">
+                    <label class="font-weight-bold text-gray-800 small">Motivo / Etiqueta</label>
+                    <select id="modalBreakLabel" class="custom-select mb-2">
+                        <option value="Almuerzo">Almuerzo</option>
+                        <option value="Café">Café</option>
+                        <option value="Descanso">Descanso</option>
+                        <option value="Otro">Otro...</option>
+                    </select>
+                    <input type="text" id="modalBreakLabelCustom" class="form-control" placeholder="Escriba el motivo..." style="display: none;" maxlength="50">
+                </div>
+                
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group mb-0">
+                            <label class="font-weight-bold text-gray-800 small">Hora inicio</label>
+                            <input type="time" id="modalBreakStart" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group mb-0">
+                            <label class="font-weight-bold text-gray-800 small">Hora fin</label>
+                            <input type="time" id="modalBreakEnd" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="modalBreakError" class="text-danger small mt-2" style="display: none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="saveBreakBtn">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Template for Break Items -->
+<template id="break-template">
+    <div class="break-item card shadow-sm mb-2 border-left-warning">
+        <div class="card-body p-2 d-flex justify-content-between align-items-center">
+            <div>
+                <i class="fas fa-mug-hot text-warning mr-2"></i>
+                <strong class="text-gray-800 break-label-text">{LABEL}</strong>
+                <span class="text-muted small ml-2 break-time-text">{START} - {END}</span>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-danger border-0 delete-break-btn" title="Eliminar">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+            <input type="hidden" class="break-id" name="schedules[{DAY}].breaks[{INDEX}].id" value="" />
+            <input type="hidden" class="break-start" name="schedules[{DAY}].breaks[{INDEX}].startBreak" value="{START}" />
+            <input type="hidden" class="break-end" name="schedules[{DAY}].breaks[{INDEX}].endBreak" value="{END}" />
+            <input type="hidden" class="break-label" name="schedules[{DAY}].breaks[{INDEX}].label" value="{LABEL}" />
+        </div>
+    </div>
+</template>
+</div>
+
+<!-- Block: Template-specific Scripts -->
+<div layout:fragment="scripts">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script th:if="${success}">
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "[[${success}]]",
+          showConfirmButton: false,
+          timer: 2000
+        });
+    </script>
+    
+    <script th:if="${error}">
+        Swal.fire({
+          position: "top-end",
+          icon: "error",
+          title: "Error",
+          text: "[[${error}]]",
+          showConfirmButton: true
+        });
+    </script>
+
+    <!-- Break Management Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle select change for "Otro" option
+            document.body.addEventListener('change', function(e) {
+                if (e.target && e.target.id === 'modalBreakLabel') {
+                    const customInput = document.getElementById('modalBreakLabelCustom');
+                    if (e.target.value === 'Otro') {
+                        customInput.style.display = 'block';
+                        customInput.required = true;
+                    } else {
+                        customInput.style.display = 'none';
+                        customInput.required = false;
+                        customInput.value = '';
+                    }
+                }
+            });
+
+            // Handle open modal button
+            document.body.addEventListener('click', function(e) {
+                const btn = e.target.closest('[data-target="#addBreakModal"]');
+                if (btn) {
+                    const dayKey = btn.getAttribute('data-day');
+                    const breakListContainer = document.getElementById(`breaks-list-${dayKey.toLowerCase()}`);
+                    const currentBreaks = breakListContainer.querySelectorAll('.break-item').length;
+                    
+                    if (currentBreaks >= 3) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Límite alcanzado',
+                            text: 'Un horario puede tener máximo 3 descansos.'
+                        });
+                        return false;
+                    }
+                    
+                    document.getElementById('modalDayKey').value = dayKey;
+                    document.getElementById('modalBreakStart').value = '';
+                    document.getElementById('modalBreakEnd').value = '';
+                    document.getElementById('modalBreakLabel').value = 'Almuerzo';
+                    document.getElementById('modalBreakLabelCustom').style.display = 'none';
+                    document.getElementById('modalBreakLabelCustom').value = '';
+                    document.getElementById('modalBreakError').style.display = 'none';
+                }
+            });
+
+            // Re-index function
+            function reindexBreaks(dayKey) {
+                const breakListContainer = document.getElementById(`breaks-list-${dayKey.toLowerCase()}`);
+                const items = breakListContainer.querySelectorAll('.break-item');
+                
+                items.forEach((item, index) => {
+                    const idInput = item.querySelector('.break-id');
+                    const startInput = item.querySelector('.break-start');
+                    const endInput = item.querySelector('.break-end');
+                    const labelInput = item.querySelector('.break-label');
+                    
+                    if (idInput) idInput.name = `schedules[${dayKey}].breaks[${index}].id`;
+                    startInput.name = `schedules[${dayKey}].breaks[${index}].startBreak`;
+                    endInput.name = `schedules[${dayKey}].breaks[${index}].endBreak`;
+                    labelInput.name = `schedules[${dayKey}].breaks[${index}].label`;
+                });
+                
+                const emptyMsg = breakListContainer.querySelector('.empty-breaks-msg');
+                if (items.length === 0) {
+                    if (emptyMsg) emptyMsg.style.display = 'block';
+                } else {
+                    if (emptyMsg) emptyMsg.style.display = 'none';
+                }
+                
+                // Trigger preview update
+                htmx.trigger(`#startTime_${dayKey}`, 'change');
+            }
+
+            // Save break button
+            document.body.addEventListener('click', function(e) {
+                if (e.target && e.target.id === 'saveBreakBtn') {
+                    const dayKey = document.getElementById('modalDayKey').value;
+                    const startInput = document.getElementById('modalBreakStart').value;
+                    const endInput = document.getElementById('modalBreakEnd').value;
+                    const selectLabel = document.getElementById('modalBreakLabel').value;
+                    let label = selectLabel;
+                    
+                    if (selectLabel === 'Otro') {
+                        label = document.getElementById('modalBreakLabelCustom').value.trim();
+                        if (!label) {
+                            document.getElementById('modalBreakError').textContent = 'Debe escribir un motivo.';
+                            document.getElementById('modalBreakError').style.display = 'block';
+                            return;
+                        }
+                    }
+                    
+                    if (!startInput || !endInput) {
+                        document.getElementById('modalBreakError').textContent = 'Debe llenar la hora de inicio y fin.';
+                        document.getElementById('modalBreakError').style.display = 'block';
+                        return;
+                    }
+                    
+                    if (startInput >= endInput) {
+                        document.getElementById('modalBreakError').textContent = 'La hora de inicio debe ser anterior a la hora de fin.';
+                        document.getElementById('modalBreakError').style.display = 'block';
+                        return;
+                    }
+
+                    // Check for max 3 breaks again just in case
+                    const breakListContainer = document.getElementById(`breaks-list-${dayKey.toLowerCase()}`);
+                    const currentBreaks = breakListContainer.querySelectorAll('.break-item').length;
+                    
+                    if (currentBreaks >= 3) {
+                        $('#addBreakModal').modal('hide');
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Límite alcanzado',
+                            text: 'Un horario puede tener máximo 3 descansos.'
+                        });
+                        return;
+                    }
+
+                    // Clone template
+                    const template = document.getElementById('break-template');
+                    const clone = template.content.cloneNode(true);
+                    
+                    clone.querySelector('.break-label-text').textContent = label;
+                    clone.querySelector('.break-time-text').textContent = `${startInput} - ${endInput}`;
+                    
+                    clone.querySelector('.break-start').value = startInput;
+                    clone.querySelector('.break-end').value = endInput;
+                    clone.querySelector('.break-label').value = label;
+                    
+                    breakListContainer.appendChild(clone);
+                    
+                    reindexBreaks(dayKey);
+                    
+                    $('#addBreakModal').modal('hide');
+                }
+            });
+
+            // Delete break logic
+            document.body.addEventListener('click', function(e) {
+                const delBtn = e.target.closest('.delete-break-btn');
+                if (delBtn) {
+                    Swal.fire({
+                        title: '¿Eliminar descanso?',
+                        text: "Esta acción solo afecta el día actual.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#e74a3b',
+                        cancelButtonColor: '#858796',
+                        confirmButtonText: 'Sí, eliminar',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const item = delBtn.closest('.break-item');
+                            const container = item.parentElement;
+                            const dayMatch = container.id.match(/breaks-list-(.+)/);
+                            const dayKeyUpper = dayMatch ? dayMatch[1].toUpperCase() : '';
+                            
+                            item.remove();
+                            
+                            if (dayKeyUpper) {
+                                reindexBreaks(dayKeyUpper);
+                            }
+                        }
+                    });
+                }
+            });
+            
+            // Initial UI update for existing breaks
+            document.body.addEventListener('htmx:afterSwap', function(evt) {
+                if(evt.detail.target.id === 'schedule-settings-container') {
+                    const days = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
+                    days.forEach(day => reindexBreaks(day));
+                }
+            });
+        });
+    </script>
+</div>
+
+</body>
+
+</html>

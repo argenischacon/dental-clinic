@@ -1,0 +1,232 @@
+<th:block th:fragment="tabs" th:object="${scheduleForm}">
+    <th:block th:if="*{dentistId != null}">
+        <!-- Slot Duration -->
+        <div class="col-md-6 mb-3">
+            <label for="slotDurationMinutes" class="font-weight-bold text-gray-800 small"> Duración de slots</label>
+            <div class="input-group">
+                <select th:field="*{slotDurationMinutes}" class="custom-select" name="slotDurationMinutes" id="slotDurationMinutes" required>
+                    <option value="15">15 minutos</option>
+                    <option value="30">30 minutos</option>
+                    <option value="45">45 minutos</option>
+                    <option value="60">60 minutos</option>
+                </select>
+                <div class="input-group-append">
+                    <span class="input-group-text">
+                        <i class="fas fa-clock text-gray-500"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!--Tabs Navigation-->
+        <div class="col-md-12 mt-3"
+             th:with="days=${ {'MONDAY':'Lunes', 'TUESDAY':'Martes', 'WEDNESDAY':'Miércoles', 'THURSDAY':'Jueves', 'FRIDAY':'Viernes', 'SATURDAY':'Sábado', 'SUNDAY':'Domingo'} }">
+            <label class="font-weight-bold text-gray-800 small d-block mb-3">
+                Días de la semana
+            </label>
+
+            <!--Tab for each day of the week-->
+            <ul class="nav nav-pills mb-2" id="daysTab" role="tablist">
+                <li class="nav-item mr-2 mb-2" role="presentation" th:each="day, stat : ${days}">
+                    <button class="nav-link px-4 shadow-sm border-0"
+                            th:classappend="${stat.first ? 'active' : ''}"
+                            th:id="|${day.key.toLowerCase()}-tab|"
+                            data-toggle="tab"
+                            th:data-target="|#${day.key.toLowerCase()}-pane|"
+                            type="button" role="tab"
+                            th:aria-controls="${day.key.toLowerCase() + '-pane'}"
+                            th:aria-selected="${stat.first}">
+                        <span th:text="${day.value}">Lunes</span>
+                        <i th:if="*{schedules[__${day.key}__].id != null}" class="fas fa-check-circle text-success ml-1" title="Día configurado"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Block: Tabs Content (Daily forms) -->
+        <div class="col-md-12 mt-3">
+            <div class="tab-content"
+                 id="daysTabContent"
+                 th:with="days=${ {'MONDAY':'Lunes', 'TUESDAY':'Martes', 'WEDNESDAY':'Miércoles',
+                         'THURSDAY':'Jueves', 'FRIDAY':'Viernes', 'SATURDAY':'Sábado', 'SUNDAY':'Domingo'} }">
+
+                <div th:each="day, stat : ${days}"
+                     class="tab-pane fade"
+                     th:classappend="${stat.first ? 'show active' : ''}"
+                     th:id="|${day.key.toLowerCase()}-pane|"
+                     role="tabpanel"
+                     th:aria-labelledby="|${day.key.toLowerCase()}-tab|"
+                     tabindex="0">
+
+                    <div class="card shadow mb-4 border-left-success">
+                        <div class="card-header py-3 bg-light d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <i class="far fa-calendar-alt text-success mr-2"></i>
+                                <h6 class="m-0 font-weight-bold text-success">Horario del día</h6>
+                                <span class="small text-success ml-2 font-weight-bold" th:text="|- ${day.value}|">— Lunes</span>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <input type="hidden" th:field="*{schedules[__${day.key}__].id}" />
+                            <div class="row">
+                                <div class="col-md-5 mb-4 mb-md-0 border-right pr-md-4">
+                                    <div class="row">
+                                        <div class="col-6 mb-4">
+                                            <label class="font-weight-bold text-uppercase text-muted small">Hora inicio</label>
+                                            <input th:field="*{schedules[__${day.key}__].startTime}" type="time"
+                                                   class="form-control"
+                                                   th:id="|startTime_${day.key}|"
+                                                   th:name="|startTime_${day.key}|">
+                                        </div>
+                                        <div class="col-6 mb-4">
+                                            <label class="font-weight-bold text-uppercase text-muted small">Hora fin</label>
+                                            <input th:field="*{schedules[__${day.key}__].endTime}" type="time"
+                                                   class="form-control"
+                                                   th:id="|endTime_${day.key}|"
+                                                   th:name="|endTime_${day.key}|">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="font-weight-bold text-gray-800 small">Disponible</label>
+                                        <div class="d-flex mt-1">
+                                            <div class="custom-control custom-radio mr-4">
+                                                <input th:field="*{schedules[__${day.key}__].available}" type="radio"
+                                                       th:id="|availTrue_${day.key}|"
+                                                       value="true"
+                                                       class="custom-control-input">
+                                                <label class="custom-control-label cursor-pointer"
+                                                       th:for="|availTrue_${day.key}|">Sí</label>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input th:field="*{schedules[__${day.key}__].available}" type="radio"
+                                                       th:id="|availFalse_${day.key}|"
+                                                       value="false"
+                                                       class="custom-control-input">
+                                                <label class="custom-control-label cursor-pointer"
+                                                       th:for="|availFalse_${day.key}|">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-7 pl-md-4">
+                                    <label class="font-weight-bold text-gray-800 small">Descansos / Breaks</label>
+                                    <p class="small text-muted mb-2">Los descansos configurados se excluyen
+                                        automáticamente de la vista previa.</p>
+                                    <div class="mb-3 mt-1" th:id="|breaks-list-${day.key.toLowerCase()}|">
+                                        <div th:if="${#lists.isEmpty(scheduleForm.schedules[__${day.key}__].breaks)}"
+                                             class="text-center py-3 text-muted small border rounded bg-light empty-breaks-msg">
+                                            <i class="fas fa-coffee fa-lg mb-2 d-block text-gray-400"></i>
+                                            Aún no hay descansos configurados para este día.
+                                        </div>
+                                        <div th:if="${not #lists.isEmpty(scheduleForm.schedules[__${day.key}__].breaks)}" 
+                                             class="text-center py-3 text-muted small border rounded bg-light empty-breaks-msg" style="display: none;">
+                                            <i class="fas fa-coffee fa-lg mb-2 d-block text-gray-400"></i>
+                                            Aún no hay descansos configurados para este día.
+                                        </div>
+
+                                        <div th:each="break, stat : *{schedules[__${day.key}__].breaks}" class="break-item card shadow-sm mb-2 border-left-warning">
+                                            <div class="card-body p-2 d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <i class="fas fa-mug-hot text-warning mr-2"></i>
+                                                    <strong class="text-gray-800 break-label-text" th:text="${break.label}">Descanso</strong>
+                                                    <span class="text-muted small ml-2 break-time-text" th:text="|${break.startBreak} - ${break.endBreak}|">12:00 - 13:00</span>
+                                                </div>
+                                                <button type="button" class="btn btn-sm btn-outline-danger border-0 delete-break-btn" title="Eliminar">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                                <input type="hidden" class="break-id" th:name="|schedules[${day.key}].breaks[${stat.index}].id|" th:value="${break.id}" />
+                                                <input type="hidden" class="break-start" th:name="|schedules[${day.key}].breaks[${stat.index}].startBreak|" th:value="${break.startBreak}" />
+                                                <input type="hidden" class="break-end" th:name="|schedules[${day.key}].breaks[${stat.index}].endBreak|" th:value="${break.endBreak}" />
+                                                <input type="hidden" class="break-label" th:name="|schedules[${day.key}].breaks[${stat.index}].label|" th:value="${break.label}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-secondary btn-block py-2"
+                                            style="border-style: dashed; border-width: 2px;" data-toggle="modal"
+                                            data-target="#addBreakModal" th:data-day="${day.key}">
+                                        <i class="fas fa-plus-circle mr-2"></i> Agregar break
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4 pt-3 border-top">
+                                <div class="col-12 text-left">
+                                    <button type="button" class="btn btn-primary px-4 py-2 preview-btn"
+                                            th:hx-post="|/admin/schedules/preview?day=${day.key}|"
+                                            th:hx-target="|#preview-container-${day.key.toLowerCase()}|"
+                                            hx-include="closest .tab-pane, #slotDurationMinutes">
+                                        <i class="fas fa-eye mr-2"></i> Generar vista previa
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Preview-->
+                        <div th:id="|preview-container-${day.key.toLowerCase()}|">
+                            <div class="card-footer bg-light p-4">
+                                <div class="alert alert-secondary d-flex align-items-center py-2 px-3 mb-0 small" role="alert">
+                                    <i class="fas fa-info-circle mr-3 fa-lg"></i>
+                                    <div><strong>Vista previa:</strong> Completa la hora de inicio, fin y duración
+                                        para visualizar los bloques de atención disponibles.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!--Buttons-->
+                <div class="d-flex justify-content-end mb-4 bg-white p-3 border-top rounded shadow-sm">
+                    <a href="/admin/schedules/assign"
+                       class="btn btn-outline-secondary font-weight-bold mr-3 px-4 py-2">Cancelar</a>
+                    <button type="submit" class="btn btn-primary font-weight-bold px-4 py-2 shadow-sm">
+                        Guardar horario
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </th:block>
+    <th:block th:unless="*{dentistId != null}">
+        <div class="col-md-12 mb-3 mt-4 text-center text-muted">
+            <i class="fas fa-hand-pointer fa-3x mb-3 text-gray-300"></i>
+            <p>Seleccione un odontólogo para configurar su horario.</p>
+        </div>
+    </th:block>
+
+    <script th:inline="javascript">
+        // Script to change preview button state if day inputs change
+        document.addEventListener('change', function(e) {
+            let pane = e.target.closest('.tab-pane');
+            if (pane) {
+                let btn = pane.querySelector('.preview-btn');
+                if (btn && btn.dataset.generated === 'true') {
+                    btn.innerHTML = '<i class="fas fa-sync-alt mr-2"></i> Actualizar vista previa';
+                    btn.classList.remove('btn-primary', 'btn-success', 'text-white');
+                    btn.classList.add('btn-warning', 'text-dark', 'border-0');
+                }
+            }
+        });
+
+        document.body.addEventListener('htmx:afterOnLoad', function(evt) {
+            let target = evt.detail.elt;
+            let xhr = evt.detail.xhr;
+            if (target && target.classList && target.classList.contains('preview-btn')) {
+                if (xhr.responseText.includes('alert-danger')) {
+                    // Error de validacion, resetear boton a su estado original
+                    target.innerHTML = '<i class="fas fa-eye mr-2"></i> Generar vista previa';
+                    target.classList.remove('btn-success', 'btn-warning', 'text-white', 'text-dark', 'border-0');
+                    target.classList.add('btn-primary');
+                    target.dataset.generated = 'false';
+                } else {
+                    target.dataset.generated = 'true';
+                    target.innerHTML = '<i class="fas fa-check mr-2"></i> Vista previa actualizada';
+                    target.classList.remove('btn-primary', 'btn-warning', 'text-dark', 'border-0');
+                    target.classList.add('btn-success', 'text-white');
+                }
+            }
+        });
+    </script>
+</th:block>
