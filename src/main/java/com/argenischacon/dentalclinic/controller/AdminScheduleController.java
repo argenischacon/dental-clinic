@@ -69,7 +69,7 @@ public class AdminScheduleController {
                                              RedirectAttributes redirectAttributes) {
         if(!dentistService.existsById(dentistId)){
             redirectAttributes.addFlashAttribute("error", "El odontólogo no existe en el sistema.");
-            return "redirect:/admin/shcedules/view";
+            return "redirect:/admin/schedules/view";
         }
 
         Map<DayOfWeek, DailyScheduleViewDto> weeklySchedule = workScheduleService.getWeeklyScheduleView(dentistId);
