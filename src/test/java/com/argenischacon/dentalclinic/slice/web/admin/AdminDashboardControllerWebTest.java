@@ -1,8 +1,7 @@
-package com.argenischacon.dentalclinic.slice.web;
+package com.argenischacon.dentalclinic.slice.web.admin;
 
-import com.argenischacon.dentalclinic.controller.AdminController;
+import com.argenischacon.dentalclinic.controller.admin.AdminDashboardController;
 import com.argenischacon.dentalclinic.security.CustomAuthenticationSuccessHandler;
-import com.argenischacon.dentalclinic.security.MustChangePasswordFilter;
 import com.argenischacon.dentalclinic.security.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +13,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
-@WebMvcTest(AdminController.class)
+@WebMvcTest(AdminDashboardController.class)
 @Import(SecurityConfig.class)
-public class AdminControllerIT {
+public class AdminDashboardControllerWebTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -25,13 +25,11 @@ public class AdminControllerIT {
     @MockBean
     private CustomAuthenticationSuccessHandler successHandler;
 
-    @MockBean
-    private MustChangePasswordFilter mustChangePasswordFilter;
-
     @Test
     @WithMockUser(roles = "ADMIN")
     public void testAdminAccessWithAdminRole() throws Exception {
         mockMvc.perform(get("/admin/dashboard"))
+               .andDo(print())
                .andExpect(status().isOk())
                .andExpect(view().name("admin/dashboard"));
     }

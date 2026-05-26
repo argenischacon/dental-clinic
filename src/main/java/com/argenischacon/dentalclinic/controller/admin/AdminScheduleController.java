@@ -1,4 +1,4 @@
-package com.argenischacon.dentalclinic.controller;
+package com.argenischacon.dentalclinic.controller.admin;
 
 import com.argenischacon.dentalclinic.dto.schedule.AssignScheduleFormDto;
 import com.argenischacon.dentalclinic.dto.dentist.DentistNestedDto;

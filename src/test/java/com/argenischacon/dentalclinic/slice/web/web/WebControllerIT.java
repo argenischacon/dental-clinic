@@ -1,8 +1,7 @@
-package com.argenischacon.dentalclinic.slice.web;
+package com.argenischacon.dentalclinic.slice.web.web;
 
-import com.argenischacon.dentalclinic.controller.WebController;
+import com.argenischacon.dentalclinic.controller.web.WebController;
 import com.argenischacon.dentalclinic.security.CustomAuthenticationSuccessHandler;
-import com.argenischacon.dentalclinic.security.MustChangePasswordFilter;
 import com.argenischacon.dentalclinic.security.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +23,6 @@ public class WebControllerIT {
 
     @MockBean
     private CustomAuthenticationSuccessHandler successHandler;
-
-    @MockBean
-    private MustChangePasswordFilter mustChangePasswordFilter;
 
     @Test
     @WithMockUser(roles = "ADMIN")

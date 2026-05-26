@@ -1,8 +1,7 @@
-package com.argenischacon.dentalclinic.slice.web;
+package com.argenischacon.dentalclinic.slice.web.receptionist;
 
-import com.argenischacon.dentalclinic.controller.ReceptionistController;
+import com.argenischacon.dentalclinic.controller.receptionist.ReceptionistDashboardController;
 import com.argenischacon.dentalclinic.security.CustomAuthenticationSuccessHandler;
-import com.argenischacon.dentalclinic.security.MustChangePasswordFilter;
 import com.argenischacon.dentalclinic.security.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +14,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(ReceptionistController.class)
+@WebMvcTest(ReceptionistDashboardController.class)
 @Import(SecurityConfig.class)
-public class ReceptionistControllerIT {
+public class ReceptionistDashboardControllerWebTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private CustomAuthenticationSuccessHandler successHandler;
-
-    @MockBean
-    private MustChangePasswordFilter mustChangePasswordFilter;
 
     @Test
     @WithMockUser(roles = "RECEPTIONIST")

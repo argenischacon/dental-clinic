@@ -1,4 +1,4 @@
-package com.argenischacon.dentalclinic.controller;
+package com.argenischacon.dentalclinic.controller.admin;
 
 import com.argenischacon.dentalclinic.dto.dentist.DentistRequestDto;
 import com.argenischacon.dentalclinic.exception.BusinessRuleException;
@@ -15,18 +15,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/admin/dentists")
 @RequiredArgsConstructor
-public class AdminController {
+public class AdminDentistController {
 
     private final DentistService dentistService;
 
-    @GetMapping("/dashboard")
-    public String dashboard() {
-        return "admin/dashboard";
-    }
-
-    @GetMapping("/dentists/list")
+    @GetMapping("/list")
     public String dentistListPage(
             Model model,
             @RequestParam(required = false) String search,
@@ -45,12 +40,12 @@ public class AdminController {
         return "admin/dentists/list";
     }
 
-    @GetMapping("/dentists/add")
+    @GetMapping("/add")
     public String dentistAdd(@ModelAttribute DentistRequestDto dentistRequestDto) {
         return "admin/dentists/add";
     }
 
-    @PostMapping("/dentists/save")
+    @PostMapping("/save")
     public String saveDentist(@Valid @ModelAttribute DentistRequestDto dentistRequestDto,
                               BindingResult result,
                               Model model,
@@ -71,20 +66,20 @@ public class AdminController {
         return "redirect:/admin/dentists/list";
     }
 
-    @GetMapping("/dentists/{id}/detail")
+    @GetMapping("/{id}/detail")
     public String getDentistDetailModal(@PathVariable Long id, Model model, ServletResponse servletResponse) {
         model.addAttribute("dentist", dentistService.findById(id));
         return "admin/dentists/_detail :: modal-content";
     }
 
-    @GetMapping("/dentists/edit/{id}")
+    @GetMapping("/edit/{id}")
     public String dentistEditPage(@PathVariable Long id, Model model) {
         model.addAttribute("dentistRequestDto", dentistService.getDentistForEdit(id));
         model.addAttribute("dentistId", id);
         return "admin/dentists/edit";
     }
 
-    @PostMapping("/dentists/edit/{id}")
+    @PostMapping("/edit/{id}")
     public String updateDentist(@PathVariable Long id,
                                 @Valid @ModelAttribute DentistRequestDto dentistRequestDto,
                                 BindingResult result,
@@ -105,14 +100,14 @@ public class AdminController {
         return "redirect:/admin/dentists/list";
     }
 
-    @PostMapping("/dentists/activate/{id}")
+    @PostMapping("/activate/{id}")
     public String activateDentist(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         dentistService.activateDentist(id);
         redirectAttributes.addFlashAttribute("success", "Odontólogo activado exitosamente.");
         return "redirect:/admin/dentists/list";
     }
 
-    @PostMapping("/dentists/deactivate/{id}")
+    @PostMapping("/deactivate/{id}")
     public String deactivateDentist(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         dentistService.deactivateDentist(id);
         redirectAttributes.addFlashAttribute("success", "Odontólogo desactivado exitosamente.");

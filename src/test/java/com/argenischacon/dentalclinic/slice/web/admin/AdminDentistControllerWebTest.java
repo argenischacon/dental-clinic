@@ -1,6 +1,6 @@
-package com.argenischacon.dentalclinic.slice.web;
+package com.argenischacon.dentalclinic.slice.web.admin;
 
-import com.argenischacon.dentalclinic.controller.AdminController;
+import com.argenischacon.dentalclinic.controller.admin.AdminDentistController;
 import com.argenischacon.dentalclinic.dto.dentist.DentistListDto;
 import com.argenischacon.dentalclinic.dto.dentist.DentistRequestDto;
 import com.argenischacon.dentalclinic.dto.dentist.DentistResponseDto;
@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(AdminController.class)
+@WebMvcTest(AdminDentistController.class)
 @Import(SecurityConfig.class)
 public class AdminDentistControllerWebTest {
 

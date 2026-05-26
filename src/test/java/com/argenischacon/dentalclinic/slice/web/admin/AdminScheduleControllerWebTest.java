@@ -1,6 +1,6 @@
-package com.argenischacon.dentalclinic.slice.web;
+package com.argenischacon.dentalclinic.slice.web.admin;
 
-import com.argenischacon.dentalclinic.controller.AdminScheduleController;
+import com.argenischacon.dentalclinic.controller.admin.AdminScheduleController;
 import com.argenischacon.dentalclinic.dto.dentist.DentistNestedDto;
 import com.argenischacon.dentalclinic.dto.schedule.AssignScheduleFormDto;
 import com.argenischacon.dentalclinic.dto.schedule.DailyScheduleFormDto;
@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

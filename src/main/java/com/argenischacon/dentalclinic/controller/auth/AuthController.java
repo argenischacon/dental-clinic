@@ -1,4 +1,4 @@
-package com.argenischacon.dentalclinic.controller;
+package com.argenischacon.dentalclinic.controller.auth;
 
 import com.argenischacon.dentalclinic.dto.user.ChangePasswordRequest;
 import com.argenischacon.dentalclinic.exception.BusinessRuleException;

@@ -1,4 +1,4 @@
-package com.argenischacon.dentalclinic.controller;
+package com.argenischacon.dentalclinic.controller.web;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

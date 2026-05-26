@@ -1,8 +1,7 @@
-package com.argenischacon.dentalclinic.slice.web;
+package com.argenischacon.dentalclinic.slice.web.dentist;
 
-import com.argenischacon.dentalclinic.controller.DentistController;
+import com.argenischacon.dentalclinic.controller.dentist.DentistDashboardController;
 import com.argenischacon.dentalclinic.security.CustomAuthenticationSuccessHandler;
-import com.argenischacon.dentalclinic.security.MustChangePasswordFilter;
 import com.argenischacon.dentalclinic.security.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +14,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(DentistController.class)
+@WebMvcTest(DentistDashboardController.class)
 @Import(SecurityConfig.class)
-public class DentistControllerIT {
+public class DentistDashboardControllerWebTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockitoBean
     private CustomAuthenticationSuccessHandler successHandler;
-
-    @MockitoBean
-    private MustChangePasswordFilter mustChangePasswordFilter;
 
     @Test
     @WithMockUser(roles = "DENTIST")
