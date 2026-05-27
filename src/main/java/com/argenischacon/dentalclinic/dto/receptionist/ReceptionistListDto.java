@@ -7,7 +7,8 @@ public record ReceptionistListDto(
         Long id,
         String employeeNumber,
         String dni,
-        String fullName,
+        String name,
+        String lastName,
         String email,
         String phone,
         boolean active

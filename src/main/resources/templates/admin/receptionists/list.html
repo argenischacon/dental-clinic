@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin_layout}">
+<head>
+    <title>Recepcionistas</title>
+    <style>
+        /* Initial avatar */
+        .avatar-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        /* Status badge with dot */
+        .badge-status {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.3em 0.75em;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .badge-status .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        /* Name in table */
+        .receptionist-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+        /* Secondary contact */
+        .contact-secondary {
+            font-size: 0.78rem;
+            color: #858796;
+        }
+        /* Inactive row */
+        .row-inactive td {
+            opacity: 0.65;
+        }
+        /* Action buttons */
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+        /* Employee text */
+        .employee-text {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #858796;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <div layout:fragment="content">
+
+        <!-- Page Heading -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h1 class="h3 mb-1 text-gray-800">Gestión de Recepcionistas</h1>
+                <p class="mb-0 text-gray-600 small">Administra el equipo de recepcionistas de la clínica</p>
+            </div>
+            <a th:href="@{/admin/receptionists/add}" class="d-none d-sm-inline-block btn btn-primary shadow-sm">
+                <i class="fas fa-plus fa-sm text-white-50 mr-1"></i> Agregar Recepcionista
+            </a>
+        </div>
+
+        <!-- ===== STATISTICS CARDS ===== -->
+        <div class="row mb-4">
+
+            <!-- Total Receptionists -->
+            <div class="col-md-4 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Total Recepcionistas
+                                </div>
+                                <div class="h4 mb-0 font-weight-bold text-gray-800"
+                                     th:text="${totalReceptionists ?: 0}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-headset fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active -->
+            <div class="col-md-4 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Activos
+                                </div>
+                                <div class="h4 mb-0 font-weight-bold text-gray-800"
+                                     th:text="${activeReceptionists ?: 0}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inactive -->
+            <div class="col-md-4 mb-4">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    Inactivos
+                                </div>
+                                <div class="h4 mb-0 font-weight-bold text-gray-800"
+                                     th:text="${inactiveReceptionists ?: 0}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-times-circle fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- ===== END STATISTICS CARDS ===== -->
+
+        <!-- ===== FILTERS ===== -->
+        <div class="card shadow mb-4">
+            <div class="card-body py-3">
+                <form th:action="@{/admin/receptionists/list}" method="get" id="filterForm">
+                    <div class="form-row align-items-end">
+
+                        <!-- Search -->
+                        <div class="col-md-6 mb-2 mb-md-0">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1"
+                                   for="searchInput">Búsqueda rápida</label>
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-light border-0">
+                                        <i class="fas fa-search fa-sm text-gray-400"></i>
+                                    </span>
+                                </div>
+                                <input type="text"
+                                       id="searchInput"
+                                       name="search"
+                                       class="form-control bg-light border-0 small"
+                                       placeholder="Nombre, N° empleado o email..."
+                                       th:value="${param.search}">
+                            </div>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="col-md-3 mb-2 mb-md-0">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1"
+                                   for="statusFilter">Estado</label>
+                            <select id="statusFilter" name="active"
+                                    class="form-control form-control-sm bg-light border-0">
+                                <option value="">Todos</option>
+                                <option value="true"
+                                        th:selected="${param.active == 'true'}">Activos</option>
+                                <option value="false"
+                                        th:selected="${param.active == 'false'}">Inactivos</option>
+                            </select>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="col-md-3 d-flex align-items-center gap-2">
+                            <button type="submit" class="btn btn-primary btn-sm mr-1">
+                                <i class="fas fa-search fa-sm"></i> Buscar
+                            </button>
+                            <a th:href="@{/admin/receptionists/list}" class="btn btn-light btn-sm text-gray-600">
+                                <i class="fas fa-times fa-sm"></i> Limpiar
+                            </a>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- ===== END FILTERS ===== -->
+
+        <!-- ===== RECEPTIONISTS TABLE ===== -->
+        <div class="card shadow mb-4">
+
+            <!-- Card Header -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Lista de Recepcionistas</h6>
+                <span class="text-xs text-gray-500">
+                    Mostrando
+                    <span class="font-weight-bold text-gray-700"
+                          th:text="${receptionistsPage != null ? receptionistsPage.numberOfElements : 0}">0</span>
+                    de
+                    <span class="font-weight-bold text-gray-700"
+                          th:text="${receptionistsPage != null ? receptionistsPage.totalElements : 0}">0</span>
+                    registros
+                </span>
+            </div>
+
+            <!-- Card Body: Table -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="receptionistsTable" width="100%" cellspacing="0">
+
+                        <!-- Header -->
+                        <thead class="thead-light">
+                            <tr>
+                                <th class="pl-4">Recepcionista</th>
+                                <th>N° Empleado</th>
+                                <th>DNI</th>
+                                <th>Contacto</th>
+                                <th>Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <!-- Body -->
+                        <tbody>
+
+                            <!-- Message if no results -->
+                            <tr th:if="${receptionistsPage == null or receptionistsPage.isEmpty()}">
+                                <td colspan="6" class="text-center py-5 text-gray-500">
+                                    <i class="fas fa-headset fa-3x mb-3 d-block text-gray-300"></i>
+                                    No se encontraron recepcionistas con los filtros aplicados.
+                                </td>
+                            </tr>
+
+                            <!-- Data rows with Thymeleaf -->
+                            <tr th:each="receptionist : ${receptionistsPage}"
+                                th:classappend="${!receptionist.active} ? 'row-inactive' : ''">
+
+                                <!-- Avatar + Name -->
+                                <td class="align-middle pl-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-circle mr-3"
+                                             th:style="${'background-color: ' + (receptionist.active ? '#36b9cc' : '#858796')}">
+                                            <span th:text="${#strings.substring(receptionist.name,0,1) + #strings.substring(receptionist.lastName,0,1)}">RC</span>
+                                        </div>
+                                        <div>
+                                            <span class="receptionist-name"
+                                                  th:text="${receptionist.name + ' ' + receptionist.lastName}">Nombre Apellido</span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Employee Number -->
+                                <td class="align-middle">
+                                    <span class="employee-text" th:text="${receptionist.employeeNumber}">EMP-001</span>
+                                </td>
+
+                                <!-- DNI -->
+                                <td class="align-middle">
+                                    <span th:text="${receptionist.dni}">12345678</span>
+                                </td>
+
+                                <!-- Contact -->
+                                <td class="align-middle">
+                                    <div class="font-weight-bold small" th:text="${receptionist.email}">email@clinica.com</div>
+                                    <div class="contact-secondary" th:text="${receptionist.phone ?: '-'}">+54 11 0000-0000</div>
+                                </td>
+
+                                <!-- Status -->
+                                <td class="align-middle">
+                                    <!-- Active -->
+                                    <span th:if="${receptionist.active}"
+                                          class="badge-status"
+                                          style="background-color:#dcfce7; color:#15803d; border:1px solid #bbf7d0;">
+                                        <span class="dot" style="background-color:#16a34a;"></span>
+                                        Activo
+                                    </span>
+                                    <!-- Inactivo -->
+                                    <span th:unless="${receptionist.active}"
+                                          class="badge-status"
+                                          style="background-color:#f3f4f6; color:#6b7280; border:1px solid #e5e7eb;">
+                                        <span class="dot" style="background-color:#9ca3af;"></span>
+                                        Inactivo
+                                    </span>
+                                </td>
+
+                                <!-- Actions -->
+                                <td class="align-middle text-center">
+                                    <div class="btn-group" role="group">
+
+                                        <!-- Edit -->
+                                        <a th:href="@{/admin/receptionists/edit/{id}(id=${receptionist.id})}"
+                                           class="btn btn-outline-primary btn-action mr-1"
+                                           title="Editar recepcionista">
+                                            <i class="fas fa-pencil-alt fa-xs"></i>
+                                        </a>
+
+                                        <button type="button"
+                                                class="btn btn-outline-secondary btn-action mr-1"
+                                                title="Ver detalle"
+                                                data-toggle="modal"
+                                                data-target="#receptionistDetailModal"
+                                                th:attr="hx-get=@{/admin/receptionists/{id}/detail(id=${receptionist.id})}"
+                                                hx-target="#receptionistDetailModal .modal-dialog"
+                                                hx-swap="innerHTML">
+                                            <i class="fas fa-eye fa-xs"></i>
+                                        </button>
+
+                                        <!-- Deactivate (if active) -->
+                                        <form th:if="${receptionist.active}"
+                                              th:action="@{/admin/receptionists/deactivate/{id}(id=${receptionist.id})}"
+                                              method="post" class="d-inline"
+                                              th:id="'form-' + ${receptionist.id}">
+                                            <button type="button"
+                                                    class="btn btn-outline-danger btn-action"
+                                                    title="Desactivar"
+                                                    th:attr="data-form-id='form-' + ${receptionist.id},
+                                                             data-action='desactivar',
+                                                             data-name=${receptionist.name + ' ' + receptionist.lastName}"
+                                                    onclick="confirmToggle(this)">
+                                                <i class="fas fa-ban fa-xs"></i>
+                                            </button>
+                                        </form>
+
+                                        <!-- Activate (if inactive) -->
+                                        <form th:unless="${receptionist.active}"
+                                              th:action="@{/admin/receptionists/activate/{id}(id=${receptionist.id})}"
+                                              method="post" class="d-inline"
+                                              th:id="'form-' + ${receptionist.id}">
+                                            <button type="button"
+                                                    class="btn btn-outline-success btn-action"
+                                                    title="Activar"
+                                                    th:attr="data-form-id='form-' + ${receptionist.id},
+                                                             data-action='activar',
+                                                             data-name=${receptionist.name + ' ' + receptionist.lastName}"
+                                                    onclick="confirmToggle(this)">
+                                                <i class="fas fa-check fa-xs"></i>
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+            <!-- End Card Body -->
+
+            <!-- ===== PAGINATION ===== -->
+            <div class="card-footer bg-white d-flex align-items-center justify-content-between py-3"
+                 th:if="${receptionistsPage != null and receptionistsPage.totalPages > 0}">
+
+                <!-- Records info -->
+                <div class="text-xs text-gray-600">
+                    Página
+                    <span class="font-weight-bold"
+                          th:text="${receptionistsPage.number + 1}">1</span>
+                    de
+                    <span class="font-weight-bold"
+                          th:text="${receptionistsPage.totalPages}">1</span>
+                    &mdash;
+                    <span th:text="${receptionistsPage.totalElements}">0</span> registros en total
+                </div>
+
+                <!-- Pagination controls -->
+                <nav aria-label="Paginación de recepcionistas">
+                    <ul class="pagination pagination-sm mb-0">
+
+                        <!-- Previous -->
+                        <li class="page-item" th:classappend="${receptionistsPage.first} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/admin/receptionists/list(page=${receptionistsPage.number - 1},
+                                          size=${receptionistsPage.size},
+                                          search=${param.search},
+                                          active=${param.active})}"
+                               aria-label="Anterior">
+                                <i class="fas fa-chevron-left fa-xs"></i>
+                            </a>
+                        </li>
+
+                        <!-- Page numbers -->
+                        <li class="page-item"
+                            th:each="pageNum : ${#numbers.sequence(0, receptionistsPage.totalPages - 1)}"
+                            th:classappend="${pageNum == receptionistsPage.number} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{/admin/receptionists/list(page=${pageNum},
+                                          size=${receptionistsPage.size},
+                                          search=${param.search},
+                                          active=${param.active})}"
+                               th:text="${pageNum + 1}">1</a>
+                        </li>
+
+                        <!-- Next -->
+                        <li class="page-item" th:classappend="${receptionistsPage.last} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/admin/receptionists/list(page=${receptionistsPage.number + 1},
+                                          size=${receptionistsPage.size},
+                                          search=${param.search},
+                                          active=${param.active})}"
+                               aria-label="Siguiente">
+                                <i class="fas fa-chevron-right fa-xs"></i>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+
+            </div>
+            <!-- ===== END PAGINATION ===== -->
+
+        </div>
+        <!-- ===== END RECEPTIONISTS TABLE ===== -->
+
+
+        <!-- Script to show SweetAlert if 'success' attribute exists -->
+        <script th:if="${success}">
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "[[${success}]]",
+              showConfirmButton: false,
+              timer: 2000
+            });
+        </script>
+
+        <!-- SweetAlert2 confirmation for activate/deactivate -->
+        <script>
+            function confirmToggle(btn) {
+                const formId  = btn.dataset.formId;
+                const action  = btn.dataset.action;
+                const name    = btn.dataset.name;
+                const isDeactivate = action === 'desactivar';
+                Swal.fire({
+                    title: action.charAt(0).toUpperCase() + action.slice(1) + ' recepcionista',
+                    html: 'El/La recepcionista <strong>' + name + '</strong> ser\u00e1 '
+                        + (isDeactivate ? 'desactivado/a' : 'reactivado/a') + '.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: isDeactivate ? '#e74a3b' : '#1cc88a',
+                    cancelButtonColor: '#858796',
+                    confirmButtonText: 'S\u00ed, ' + action,
+                    cancelButtonText: 'Cancelar'
+                }).then(function(result) {
+                    if (result.isConfirmed) {
+                        document.getElementById(formId).submit();
+                    }
+                });
+            }
+        </script>
+
+        <!-- ===== MODAL: VIEW RECEPTIONIST DETAILS ===== -->
+        <div class="modal fade" id="receptionistDetailModal" tabindex="-1"
+             role="dialog" aria-labelledby="receptionistDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+
+                <!-- Content loaded via HTMX -->
+                <div class="modal-content border-0">
+                    <div class="modal-body text-center py-5">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-2 text-muted font-weight-bold">Cargando perfil...</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- ===== END MODAL ===== -->
+
+    </div>
+    <!-- ==================== END MAIN CONTENT ==================== -->
+
+</body>
+</html>

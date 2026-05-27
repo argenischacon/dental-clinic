@@ -24,8 +24,9 @@ public interface ReceptionistMapper {
     @Mapping(target = "username", source = "user.username")
     ReceptionistResponseDto toResponseDto(Receptionist entity);
 
-    @Mapping(target = "fullName", expression = "java(entity.getName() + \" \" + entity.getLastName())")
     ReceptionistListDto toListDto(Receptionist entity);
+
+    ReceptionistRequestDto toRequestDto(Receptionist entity);
 
     @Mapping(target = "fullName", expression = "java(entity.getName() + \" \" + entity.getLastName())")
     ReceptionistNestedDto toNestedDto(Receptionist entity);
