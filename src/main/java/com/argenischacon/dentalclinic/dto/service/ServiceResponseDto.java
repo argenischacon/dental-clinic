@@ -2,6 +2,7 @@ package com.argenischacon.dentalclinic.dto.service;
 
 import lombok.Builder;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Builder
 public record ServiceResponseDto(
@@ -11,5 +12,7 @@ public record ServiceResponseDto(
         String description,
         int durationMinutes,
         BigDecimal price,
-        boolean active
+        boolean active,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
 ) {}

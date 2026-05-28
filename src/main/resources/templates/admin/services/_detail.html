@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="modal-content" class="modal-content border-0 shadow">
+    
+    <!-- Header -->
+    <div class="modal-header text-white" 
+         th:style="${service.active} ? 'background-color: #4e73df;' : 'background-color: #858796;'">
+        <div class="d-flex align-items-center">
+            <div class="avatar-circle bg-white text-primary mr-3" style="width: 48px; height: 48px; font-size: 1.2rem;">
+                <i class="fas fa-tooth" th:classappend="${service.active ? 'text-primary' : 'text-secondary'}"></i>
+            </div>
+            <div>
+                <h5 class="modal-title font-weight-bold" th:text="${service.name}">Nombre del Servicio</h5>
+                <p class="mb-0 small text-white-50">
+                    <span th:text="${service.serviceCode}">COD-001</span> • 
+                    <span th:text="${service.active ? 'Activo' : 'Inactivo'}">Activo</span>
+                </p>
+            </div>
+        </div>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body p-4">
+        
+        <h6 class="font-weight-bold text-gray-800 border-bottom pb-2 mb-3">Información General</h6>
+        
+        <div class="row mb-3">
+            <div class="col-sm-12">
+                <span class="d-block text-xs font-weight-bold text-gray-500 text-uppercase">Descripción</span>
+                <span class="text-gray-800" th:text="${service.description ?: 'Sin descripción detallada'}">Descripción...</span>
+            </div>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-sm-6">
+                <span class="d-block text-xs font-weight-bold text-gray-500 text-uppercase">Precio</span>
+                <span class="text-gray-800 font-weight-bold text-success" th:text="${'$ ' + #numbers.formatDecimal(service.price, 1, 'COMMA', 2, 'POINT')}">$ 0.00</span>
+            </div>
+            <div class="col-sm-6">
+                <span class="d-block text-xs font-weight-bold text-gray-500 text-uppercase">Duración Estimada</span>
+                <span class="text-gray-800" th:text="${service.durationMinutes + ' minutos'}">30 minutos</span>
+            </div>
+        </div>
+
+        <h6 class="font-weight-bold text-gray-800 border-bottom pb-2 mb-3 mt-4">Metadatos</h6>
+        <div class="row">
+            <div class="col-sm-6">
+                <span class="d-block text-xs font-weight-bold text-gray-500 text-uppercase">Fecha de Creación</span>
+                <span class="text-gray-800" th:text="${#temporals.format(service.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2026</span>
+            </div>
+            <div class="col-sm-6">
+                <span class="d-block text-xs font-weight-bold text-gray-500 text-uppercase">Última Modificación</span>
+                <span class="text-gray-800" th:text="${#temporals.format(service.updatedAt, 'dd/MM/yyyy HH:mm')}">01/01/2026</span>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer bg-light border-0">
+        <button type="button" class="btn btn-secondary font-weight-bold shadow-sm" data-dismiss="modal">
+            Cerrar
+        </button>
+        <a th:href="@{/admin/services/edit/{id}(id=${service.id})}" class="btn btn-primary font-weight-bold shadow-sm">
+            <i class="fas fa-pencil-alt fa-sm mr-1"></i> Editar Servicio
+        </a>
+    </div>
+    
+</div>
+</body>
+</html>
