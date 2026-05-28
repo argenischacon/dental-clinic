@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin_layout}">
+<head>
+    <title>Servicios</title>
+    <style>
+        /* Initial avatar */
+        .avatar-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+            background-color: #4e73df;
+        }
+        /* Status badge with dot */
+        .badge-status {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.3em 0.75em;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .badge-status .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        /* Name in table */
+        .service-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+        /* Inactive row */
+        .row-inactive td {
+            opacity: 0.65;
+        }
+        /* Action buttons */
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+        /* Code text */
+        .code-text {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #858796;
+            font-family: 'Courier New', monospace;
+        }
+        .price-text {
+            font-weight: 700;
+            color: #1cc88a;
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <div layout:fragment="content">
+
+        <!-- Page Heading -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h1 class="h3 mb-1 text-gray-800">Gestión de Servicios</h1>
+                <p class="mb-0 text-gray-600 small">Administra el catálogo de servicios ofrecidos por la clínica</p>
+            </div>
+            <a th:href="@{/admin/services/add}" class="d-none d-sm-inline-block btn btn-primary shadow-sm">
+                <i class="fas fa-plus fa-sm text-white-50 mr-1"></i> Agregar Servicio
+            </a>
+        </div>
+
+        <!-- ===== STATISTICS CARDS ===== -->
+        <div class="row mb-4">
+
+            <!-- Total Services -->
+            <div class="col-md-4 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Total Servicios
+                                </div>
+                                <div class="h4 mb-0 font-weight-bold text-gray-800"
+                                     th:text="${totalServices ?: 0}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-notes-medical fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active -->
+            <div class="col-md-4 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Activos
+                                </div>
+                                <div class="h4 mb-0 font-weight-bold text-gray-800"
+                                     th:text="${activeServices ?: 0}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inactive -->
+            <div class="col-md-4 mb-4">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    Inactivos
+                                </div>
+                                <div class="h4 mb-0 font-weight-bold text-gray-800"
+                                     th:text="${inactiveServices ?: 0}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-times-circle fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- ===== END STATISTICS CARDS ===== -->
+
+        <!-- ===== FILTERS ===== -->
+        <div class="card shadow mb-4">
+            <div class="card-body py-3">
+                <form th:action="@{/admin/services/list}" method="get" id="filterForm">
+                    <div class="form-row align-items-end">
+
+                        <!-- Search -->
+                        <div class="col-md-8 mb-2 mb-md-0">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1"
+                                   for="searchInput">Búsqueda rápida</label>
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-light border-0">
+                                        <i class="fas fa-search fa-sm text-gray-400"></i>
+                                    </span>
+                                </div>
+                                <input type="text"
+                                       id="searchInput"
+                                       name="search"
+                                       class="form-control bg-light border-0 small"
+                                       placeholder="Nombre o código del servicio..."
+                                       th:value="${param.search}">
+                            </div>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="col-md-2 mb-2 mb-md-0">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1"
+                                   for="statusFilter">Estado</label>
+                            <select id="statusFilter" name="active"
+                                    class="form-control form-control-sm bg-light border-0">
+                                <option value="">Todos</option>
+                                <option value="true"
+                                        th:selected="${param.active == 'true'}">Activos</option>
+                                <option value="false"
+                                        th:selected="${param.active == 'false'}">Inactivos</option>
+                            </select>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="col-md-2 d-flex align-items-center gap-2">
+                            <button type="submit" class="btn btn-primary btn-sm mr-1">
+                                <i class="fas fa-search fa-sm"></i>
+                            </button>
+                            <a th:href="@{/admin/services/list}" class="btn btn-light btn-sm text-gray-600">
+                                <i class="fas fa-times fa-sm"></i> Limpiar
+                            </a>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- ===== END FILTERS ===== -->
+
+        <!-- ===== SERVICES TABLE ===== -->
+        <div class="card shadow mb-4">
+
+            <!-- Card Header -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Lista de Servicios</h6>
+                <span class="text-xs text-gray-500">
+                    Mostrando
+                    <span class="font-weight-bold text-gray-700"
+                          th:text="${servicesPage != null ? servicesPage.numberOfElements : 0}">0</span>
+                    de
+                    <span class="font-weight-bold text-gray-700"
+                          th:text="${servicesPage != null ? servicesPage.totalElements : 0}">0</span>
+                    registros
+                </span>
+            </div>
+
+            <!-- Card Body: Table -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="servicesTable" width="100%" cellspacing="0">
+
+                        <!-- Header -->
+                        <thead class="thead-light">
+                            <tr>
+                                <th class="pl-4">Servicio</th>
+                                <th>Código</th>
+                                <th>Precio</th>
+                                <th>Duración</th>
+                                <th>Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <!-- Body -->
+                        <tbody>
+
+                            <!-- Message if no results -->
+                            <tr th:if="${servicesPage == null or servicesPage.isEmpty()}">
+                                <td colspan="6" class="text-center py-5 text-gray-500">
+                                    <i class="fas fa-notes-medical fa-3x mb-3 d-block text-gray-300"></i>
+                                    No se encontraron servicios con los filtros aplicados.
+                                </td>
+                            </tr>
+
+                            <!-- Data rows with Thymeleaf -->
+                            <tr th:each="service : ${servicesPage}"
+                                th:classappend="${!service.active} ? 'row-inactive' : ''">
+
+                                <!-- Icon + Name -->
+                                <td class="align-middle pl-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-circle mr-3"
+                                             th:style="${'background-color: ' + (service.active ? '#4e73df' : '#858796')}">
+                                            <i class="fas fa-tooth"></i>
+                                        </div>
+                                        <div>
+                                            <span class="service-name"
+                                                  th:text="${service.name}">Nombre del Servicio</span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Service Code -->
+                                <td class="align-middle">
+                                    <span class="code-text" th:text="${service.serviceCode}">COD-001</span>
+                                </td>
+
+                                <!-- Price -->
+                                <td class="align-middle">
+                                    <span class="price-text" th:text="${'$ ' + #numbers.formatDecimal(service.price, 1, 'COMMA', 2, 'POINT')}">$ 0.00</span>
+                                </td>
+
+                                <!-- Duration -->
+                                <td class="align-middle">
+                                    <span class="font-weight-bold text-gray-700" th:text="${service.durationMinutes + ' min'}">30 min</span>
+                                </td>
+
+                                <!-- Status -->
+                                <td class="align-middle">
+                                    <!-- Active -->
+                                    <span th:if="${service.active}"
+                                          class="badge-status"
+                                          style="background-color:#dcfce7; color:#15803d; border:1px solid #bbf7d0;">
+                                        <span class="dot" style="background-color:#16a34a;"></span>
+                                        Activo
+                                    </span>
+                                    <!-- Inactivo -->
+                                    <span th:unless="${service.active}"
+                                          class="badge-status"
+                                          style="background-color:#f3f4f6; color:#6b7280; border:1px solid #e5e7eb;">
+                                        <span class="dot" style="background-color:#9ca3af;"></span>
+                                        Inactivo
+                                    </span>
+                                </td>
+
+                                <!-- Actions -->
+                                <td class="align-middle text-center">
+                                    <div class="btn-group" role="group">
+
+                                        <!-- Edit -->
+                                        <a th:href="@{/admin/services/edit/{id}(id=${service.id})}"
+                                           class="btn btn-outline-primary btn-action mr-1"
+                                           title="Editar servicio">
+                                            <i class="fas fa-pencil-alt fa-xs"></i>
+                                        </a>
+
+                                        <!-- View Detail (Future implementation) -->
+                                        <button type="button"
+                                                class="btn btn-outline-secondary btn-action mr-1"
+                                                title="Ver detalle"
+                                                data-toggle="modal"
+                                                data-target="#serviceDetailModal"
+                                                th:attr="hx-get=@{/admin/services/{id}/detail(id=${service.id})}"
+                                                hx-target="#serviceDetailModal .modal-dialog"
+                                                hx-swap="innerHTML">
+                                            <i class="fas fa-eye fa-xs"></i>
+                                        </button>
+
+                                        <!-- Deactivate (if active) -->
+                                        <form th:if="${service.active}"
+                                              th:action="@{/admin/services/deactivate/{id}(id=${service.id})}"
+                                              method="post" class="d-inline"
+                                              th:id="'form-' + ${service.id}">
+                                            <button type="button"
+                                                    class="btn btn-outline-danger btn-action"
+                                                    title="Desactivar"
+                                                    th:attr="data-form-id='form-' + ${service.id},
+                                                             data-action='desactivar',
+                                                             data-name=${service.name}"
+                                                    onclick="confirmToggle(this)">
+                                                <i class="fas fa-ban fa-xs"></i>
+                                            </button>
+                                        </form>
+
+                                        <!-- Activate (if inactive) -->
+                                        <form th:unless="${service.active}"
+                                              th:action="@{/admin/services/activate/{id}(id=${service.id})}"
+                                              method="post" class="d-inline"
+                                              th:id="'form-' + ${service.id}">
+                                            <button type="button"
+                                                    class="btn btn-outline-success btn-action"
+                                                    title="Activar"
+                                                    th:attr="data-form-id='form-' + ${service.id},
+                                                             data-action='activar',
+                                                             data-name=${service.name}"
+                                                    onclick="confirmToggle(this)">
+                                                <i class="fas fa-check fa-xs"></i>
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+            <!-- End Card Body -->
+
+            <!-- ===== PAGINATION ===== -->
+            <div class="card-footer bg-white d-flex align-items-center justify-content-between py-3"
+                 th:if="${servicesPage != null and servicesPage.totalPages > 0}">
+
+                <!-- Records info -->
+                <div class="text-xs text-gray-600">
+                    Página
+                    <span class="font-weight-bold"
+                          th:text="${servicesPage.number + 1}">1</span>
+                    de
+                    <span class="font-weight-bold"
+                          th:text="${servicesPage.totalPages}">1</span>
+                    &mdash;
+                    <span th:text="${servicesPage.totalElements}">0</span> registros en total
+                </div>
+
+                <!-- Pagination controls -->
+                <nav aria-label="Paginación de servicios">
+                    <ul class="pagination pagination-sm mb-0">
+
+                        <!-- Previous -->
+                        <li class="page-item" th:classappend="${servicesPage.first} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/admin/services/list(page=${servicesPage.number - 1},
+                                          size=${servicesPage.size},
+                                          search=${param.search},
+                                          active=${param.active})}"
+                               aria-label="Anterior">
+                                <i class="fas fa-chevron-left fa-xs"></i>
+                            </a>
+                        </li>
+
+                        <!-- Page numbers -->
+                        <li class="page-item"
+                            th:each="pageNum : ${#numbers.sequence(0, servicesPage.totalPages - 1)}"
+                            th:classappend="${pageNum == servicesPage.number} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{/admin/services/list(page=${pageNum},
+                                          size=${servicesPage.size},
+                                          search=${param.search},
+                                          active=${param.active})}"
+                               th:text="${pageNum + 1}">1</a>
+                        </li>
+
+                        <!-- Next -->
+                        <li class="page-item" th:classappend="${servicesPage.last} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/admin/services/list(page=${servicesPage.number + 1},
+                                          size=${servicesPage.size},
+                                          search=${param.search},
+                                          active=${param.active})}"
+                               aria-label="Siguiente">
+                                <i class="fas fa-chevron-right fa-xs"></i>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+
+            </div>
+            <!-- ===== END PAGINATION ===== -->
+
+        </div>
+        <!-- ===== END SERVICES TABLE ===== -->
+
+        <!-- Script to show SweetAlert if 'success' attribute exists -->
+        <script th:if="${success}">
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "[[${success}]]",
+              showConfirmButton: false,
+              timer: 2000
+            });
+        </script>
+
+        <!-- SweetAlert2 confirmation for activate/deactivate -->
+        <script>
+            function confirmToggle(btn) {
+                const formId  = btn.dataset.formId;
+                const action  = btn.dataset.action;
+                const name    = btn.dataset.name;
+                const isDeactivate = action === 'desactivar';
+                Swal.fire({
+                    title: action.charAt(0).toUpperCase() + action.slice(1) + ' servicio',
+                    html: 'El servicio <strong>' + name + '</strong> ser\u00e1 '
+                        + (isDeactivate ? 'desactivado y ya no estar\u00e1 disponible' : 'reactivado') + '.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: isDeactivate ? '#e74a3b' : '#1cc88a',
+                    cancelButtonColor: '#858796',
+                    confirmButtonText: 'S\u00ed, ' + action,
+                    cancelButtonText: 'Cancelar'
+                }).then(function(result) {
+                    if (result.isConfirmed) {
+                        document.getElementById(formId).submit();
+                    }
+                });
+            }
+        </script>
+
+        <!-- ===== MODAL: VIEW SERVICE DETAILS ===== -->
+        <div class="modal fade" id="serviceDetailModal" tabindex="-1"
+             role="dialog" aria-labelledby="serviceDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+
+                <!-- Content loaded via HTMX -->
+                <div class="modal-content border-0">
+                    <div class="modal-body text-center py-5">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-2 text-muted font-weight-bold">Cargando detalles...</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- ===== END MODAL ===== -->
+
+    </div>
+    <!-- ==================== END MAIN CONTENT ==================== -->
+
+</body>
+</html>
