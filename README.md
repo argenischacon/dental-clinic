@@ -10,7 +10,14 @@
 
 Este proyecto es un sistema para uso interno de una clínica dental, diseñado para optimizar y automatizar la administración diaria del consultorio. Facilita la interacción entre el personal administrativo, los profesionales de la salud y la gestión integral de la clínica a través de un panel de control basado en roles.
 
+<p align="center">
+  <img src="assets/dc-login.png" width="32%" alt="Login Screen" />
+  <img src="assets/dc-dentist-list.png" width="32%" alt="Dentists List" />
+  <img src="assets/dc-dentist-details.png" width="32%" alt="Dentist Details Modal" />
+</p>
+
 ---
+
 
 ## 🚀 Estado Actual del Proyecto
 
