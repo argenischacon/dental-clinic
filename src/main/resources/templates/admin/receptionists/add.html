@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin_layout}">
+<head>
+    <title>Agregar Recepcionista</title>
+</head>
+<body>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <div layout:fragment="content">
+        <!--/*@thymesVar id="receptionistRequestDto" type="com.argenischacon.dentalclinic.dto.receptionist.ReceptionistRequestDto"*/-->
+
+        <!-- Page Heading -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h1 class="h3 mb-1 text-gray-800">Agregar Recepcionista</h1>
+                <p class="mb-0 text-gray-600 small">Complete el perfil para integrar al nuevo miembro del equipo de recepción.</p>
+            </div>
+            <a th:href="@{/admin/receptionists/list}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+                <i class="fas fa-arrow-left fa-sm text-white-50 mr-1"></i> Volver a la lista
+            </a>
+        </div>
+
+        <!-- Form -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Información del Nuevo Recepcionista</h6>
+            </div>
+            
+            <div class="card-body px-4 py-5">
+            
+                <!-- Global alerts (server errors or success) -->
+                <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+                <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
+
+                <!-- Creation Form -->
+                <form th:action="@{/admin/receptionists/save}" th:object="${receptionistRequestDto}" method="post" id="receptionistForm">
+                    
+                    <!-- ********** SECTION 01: PERSONAL DATA ********** -->
+                    <div class="d-flex align-items-center mb-4">
+                        <span class="badge badge-primary rounded-circle p-2 d-flex align-items-center justify-content-center mr-2" style="width: 32px; height: 32px;">01</span>
+                        <h5 class="font-weight-bold text-gray-800 m-0">Datos Personales</h5>
+                    </div>
+                    
+                    <div class="form-row">
+                        <!-- First Name -->
+                        <div class="form-group col-md-4 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="nameInput">Nombre</label>
+                            <input type="text" class="form-control bg-light border-0" id="nameInput" th:field="*{name}" placeholder="Ej: Julian" required maxlength="60">
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                        </div>
+                        
+                        <!-- Last Name -->
+                        <div class="form-group col-md-4 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="lastNameInput">Apellido</label>
+                            <input type="text" class="form-control bg-light border-0" id="lastNameInput" th:field="*{lastName}" placeholder="Ej: Rodriguez" required maxlength="60">
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+                        </div>
+                        
+                        <!-- DNI -->
+                        <div class="form-group col-md-4 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="dniInput">DNI</label>
+                            <input type="text" class="form-control bg-light border-0" id="dniInput" th:field="*{dni}" placeholder="8 dígitos sin puntos" required maxlength="20">
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('dni')}" th:errors="*{dni}"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <!-- Date of Birth -->
+                        <div class="form-group col-md-4 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="birthDateInput">Fecha de Nacimiento</label>
+                            <input type="date" class="form-control bg-light border-0" id="birthDateInput" th:field="*{birthDate}" required>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></div>
+                        </div>
+                        
+                        <!-- Email -->
+                        <div class="form-group col-md-8 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="emailInput">Email</label>
+                            <input type="email" class="form-control bg-light border-0" id="emailInput" th:field="*{email}" placeholder="recepcion@clinica.com" required maxlength="60">
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <!-- Phone -->
+                        <div class="form-group col-md-4 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="phoneInput">Teléfono</label>
+                            <input type="tel" class="form-control bg-light border-0" id="phoneInput" th:field="*{phone}" placeholder="+54 9 11 ..." maxlength="20">
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+                        </div>
+                        
+                        <!-- Address -->
+                        <div class="form-group col-md-8 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="addressInput">Dirección</label>
+                            <input type="text" class="form-control bg-light border-0" id="addressInput" th:field="*{address}" placeholder="Calle, Número, Piso/Depto, Ciudad" maxlength="255">
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Information Alert -->
+                    <div class="alert alert-primary d-flex align-items-center mt-2 mb-5 border-left-primary" role="alert" style="background-color: #e8f4fa; color: #2e59d9;">
+                        <i class="fas fa-info-circle fa-lg mr-3"></i>
+                        <div class="small">
+                            El <strong>DNI</strong> ingresado será asignado automáticamente como el usuario y contraseña temporal del profesional. Por seguridad, el sistema le solicitará un <strong>cambio de contraseña obligatorio</strong> en su primer inicio de sesión.
+                        </div>
+                    </div>
+                    
+                    <!-- ********** SECTION 02: PROFESSIONAL DATA ********** -->
+                    <div class="d-flex align-items-center mb-4">
+                        <span class="badge badge-primary rounded-circle p-2 d-flex align-items-center justify-content-center mr-2" style="width: 32px; height: 32px;">02</span>
+                        <h5 class="font-weight-bold text-gray-800 m-0">Datos Laborales</h5>
+                    </div>
+                    
+                    <div class="form-row">
+                        <!-- Employee Number -->
+                        <div class="form-group col-md-4 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="employeeNumberInput">Número de Empleado</label>
+                            <input type="text" class="form-control bg-light border-0" id="employeeNumberInput" th:field="*{employeeNumber}" placeholder="EMP-001" required maxlength="20">
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('employeeNumber')}" th:errors="*{employeeNumber}"></div>
+                        </div>
+                        
+                        <!-- Hire Date -->
+                        <div class="form-group col-md-4 mb-4">
+                            <label class="text-xs font-weight-bold text-gray-600 text-uppercase mb-1" for="hireDateInput">Fecha de Contratación</label>
+                            <input type="date" class="form-control bg-light border-0" id="hireDateInput" th:field="*{hireDate}" required>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('hireDate')}" th:errors="*{hireDate}"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Divider and Action Buttons -->
+                    <hr class="mt-4 mb-4">
+                    
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a th:href="@{/admin/receptionists/list}" class="btn btn-link text-gray-600 font-weight-bold mr-3 text-decoration-none">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4 py-2 font-weight-bold shadow-sm">
+                            <i class="fas fa-save mr-2"></i>Guardar Recepcionista
+                        </button>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <!-- ==================== END MAIN CONTENT ==================== -->
+
+</body>
+</html>

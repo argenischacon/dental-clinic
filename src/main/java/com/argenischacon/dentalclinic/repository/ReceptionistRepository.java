@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -15,5 +16,8 @@ public interface ReceptionistRepository extends JpaRepository<Receptionist, Long
     Optional<Receptionist> findByDni(String dni);
     Optional<Receptionist> findByEmail(String email);
     Page<Receptionist> findAllByActiveTrue(Pageable pageable);
+    List<Receptionist> findAllByActiveTrue();
     Optional<Receptionist> findByIdAndActiveTrue(Long id);
+    long countByActiveTrue();
+    long countByActiveFalse();
 }
