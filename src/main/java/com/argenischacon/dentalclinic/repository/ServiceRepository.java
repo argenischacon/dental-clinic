@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -14,5 +15,9 @@ public interface ServiceRepository extends JpaRepository<Service, Long>, JpaSpec
     Optional<Service> findByServiceCode(String serviceCode);
     Optional<Service> findByName(String name);
     Page<Service> findAllByActiveTrue(Pageable pageable);
+    List<Service> findAllByActiveTrue();
     Optional<Service> findByIdAndActiveTrue(Long id);
+    
+    long countByActiveTrue();
+    long countByActiveFalse();
 }

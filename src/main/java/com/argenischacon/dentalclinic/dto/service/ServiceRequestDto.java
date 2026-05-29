@@ -23,8 +23,8 @@ public record ServiceRequestDto(
         String description,
 
         @NotNull(message = "La duración es obligatoria")
-        @Min(value = 1, message = "La duración mínima es 1 minuto")
-        int durationMinutes,
+        @Min(value = 15, message = "La duración mínima es de 15 minutos")
+        Integer durationMinutes,
 
         @NotNull(message = "El precio es obligatorio")
         @DecimalMin(value = "0.0", inclusive = false, message = "El precio debe ser mayor a 0")

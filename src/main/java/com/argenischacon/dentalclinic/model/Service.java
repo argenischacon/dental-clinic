@@ -28,7 +28,7 @@ public class Service {
     private String description;
 
     @Column(nullable = false)
-    private int durationMinutes;
+    private Integer durationMinutes;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;

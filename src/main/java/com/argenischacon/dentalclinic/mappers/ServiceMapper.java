@@ -1,5 +1,6 @@
 package com.argenischacon.dentalclinic.mappers;
 
+import com.argenischacon.dentalclinic.dto.service.ServiceListDto;
 import com.argenischacon.dentalclinic.dto.service.ServiceNestedDto;
 import com.argenischacon.dentalclinic.dto.service.ServiceRequestDto;
 import com.argenischacon.dentalclinic.dto.service.ServiceResponseDto;
@@ -20,6 +21,10 @@ public interface ServiceMapper {
     Service toEntity(ServiceRequestDto dto);
 
     ServiceResponseDto toResponseDto(Service entity);
+
+    ServiceListDto toListDto(Service entity);
+    
+    ServiceRequestDto toRequestDto(Service entity);
 
     ServiceNestedDto toNestedDto(Service entity);
 
