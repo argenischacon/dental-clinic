@@ -25,7 +25,8 @@ public class AdminDashboardIT {
     void shouldShowAdminDashboardForAdmin() throws Exception {
         mockMvc.perform(get("/admin/dashboard"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("admin/dashboard"));
+                .andExpect(view().name("admin/dashboard"))
+                .andExpect(model().attributeExists("metrics"));
     }
 
     @Test
