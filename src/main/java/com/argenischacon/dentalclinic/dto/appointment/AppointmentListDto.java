@@ -15,5 +15,5 @@ public record AppointmentListDto(
         AppointmentStatus status,
         String patientFullName,
         String dentistFullName,
-        String serviceName
+        String treatmentName
 ) {}

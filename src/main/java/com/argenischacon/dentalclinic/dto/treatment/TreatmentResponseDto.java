@@ -1,13 +1,13 @@
-package com.argenischacon.dentalclinic.dto.service;
+package com.argenischacon.dentalclinic.dto.treatment;
 
 import lombok.Builder;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Builder
-public record ServiceResponseDto(
+public record TreatmentResponseDto(
         Long id,
-        String serviceCode,
+        String treatmentCode,
         String name,
         String description,
         int durationMinutes,

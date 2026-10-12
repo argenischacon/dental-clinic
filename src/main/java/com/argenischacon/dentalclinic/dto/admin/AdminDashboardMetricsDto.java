@@ -5,7 +5,7 @@ public record AdminDashboardMetricsDto(
         long activeDentists,
         long totalReceptionists,
         long activeReceptionists,
-        long totalServices,
-        long activeServices
+        long totalTreatments,
+        long activeTreatments
 ) {
 }

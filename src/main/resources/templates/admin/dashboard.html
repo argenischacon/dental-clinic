@@ -60,18 +60,18 @@
                 </div>
             </div>
 
-            <!-- Services Summary Card -->
+            <!-- Treatments Summary Card -->
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-info shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                    Servicios Dentales</div>
+                                    Tratamientos Dentales</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    <span th:text="${metrics.totalServices()}">0</span> <small class="text-muted font-weight-normal" style="font-size: 65%;">Total</small>
+                                    <span th:text="${metrics.totalTreatments()}">0</span> <small class="text-muted font-weight-normal" style="font-size: 65%;">Total</small>
                                     <span class="mx-1 text-gray-300">|</span>
-                                    <span class="text-success" th:text="${metrics.activeServices()}">0</span> <small class="text-muted font-weight-normal" style="font-size: 65%;">Activos</small>
+                                    <span class="text-success" th:text="${metrics.activeTreatments()}">0</span> <small class="text-muted font-weight-normal" style="font-size: 65%;">Activos</small>
                                 </div>
                             </div>
                             <div class="col-auto">
@@ -110,7 +110,7 @@
                         <h6 class="m-0 font-weight-bold text-primary">Estado del Sistema</h6>
                     </div>
                     <div class="card-body">
-                        <p>El sistema se encuentra operando con normalidad. Los módulos de gestión de usuarios y catálogo de servicios están activos.</p>
+                        <p>El sistema se encuentra operando con normalidad. Los módulos de gestión de usuarios y catálogo de tratamientos están activos.</p>
                         <p class="mb-0">Usa el menú lateral para acceder a la gestión de recursos de la clínica dental.</p>
                     </div>
                 </div>

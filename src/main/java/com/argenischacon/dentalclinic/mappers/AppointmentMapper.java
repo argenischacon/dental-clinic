@@ -14,7 +14,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring", uses = {
         PatientMapper.class,
         DentistMapper.class,
-        ServiceMapper.class,
+        TreatmentMapper.class,
         ReceptionistMapper.class
 })
 public interface AppointmentMapper {
@@ -29,14 +29,14 @@ public interface AppointmentMapper {
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "dentist", ignore = true)
     @Mapping(target = "patient", ignore = true)
-    @Mapping(target = "service", ignore = true)
+    @Mapping(target = "treatment", ignore = true)
     Appointment toEntity(AppointmentRequestDto dto);
 
     AppointmentResponseDto toResponseDto(Appointment entity);
 
     @Mapping(target = "patientFullName", expression = "java(entity.getPatient().getName() + \" \" + entity.getPatient().getLastName())")
     @Mapping(target = "dentistFullName", expression = "java(entity.getDentist().getName() + \" \" + entity.getDentist().getLastName())")
-    @Mapping(target = "serviceName", source = "service.name")
+    @Mapping(target = "treatmentName", source = "treatment.name")
     AppointmentListDto toListDto(Appointment entity);
 
     AppointmentNestedDto toNestedDto(Appointment entity);
@@ -52,6 +52,6 @@ public interface AppointmentMapper {
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "dentist", ignore = true)
     @Mapping(target = "patient", ignore = true)
-    @Mapping(target = "service", ignore = true)
+    @Mapping(target = "treatment", ignore = true)
     Appointment updateEntityFromDto(AppointmentRequestDto dto, @MappingTarget Appointment entity);
 }

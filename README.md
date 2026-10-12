@@ -30,7 +30,7 @@ Actualmente, el sistema se encuentra en **desarrollo activo**. El **Módulo de A
   - Activación y Desactivación lógica (*Soft Delete*).
   - Listados dinámicos con paginación avanzada y filtros de búsqueda (implementados mediante Spring Data JPA Specifications).
 - **Gestión Clínica:**
-  - **Catálogo de Servicios:** Administración de los tratamientos ofrecidos por la clínica (costos, duración, etc.).
+  - **Catálogo de Tratamientos:** Administración de los tratamientos ofrecidos por la clínica (costos, duración, etc.).
   - **Asignación de Horarios (Schedules):** Panel intuitivo para asignar y gestionar los horarios semanales de trabajo de los odontólogos.
 - **Calidad de Software (QA):**
   - **Pruebas de Integración:** Suite de pruebas con `@SpringBootTest` y `MockMvc` configuradas con un entorno de base de datos H2 aislado.

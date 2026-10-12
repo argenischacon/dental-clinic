@@ -1,10 +1,7 @@
 package com.argenischacon.dentalclinic.mappers;
 
-import com.argenischacon.dentalclinic.dto.service.ServiceListDto;
-import com.argenischacon.dentalclinic.dto.service.ServiceNestedDto;
-import com.argenischacon.dentalclinic.dto.service.ServiceRequestDto;
-import com.argenischacon.dentalclinic.dto.service.ServiceResponseDto;
-import com.argenischacon.dentalclinic.model.Service;
+import com.argenischacon.dentalclinic.dto.treatment.*;
+import com.argenischacon.dentalclinic.model.Treatment;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,26 +9,26 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring")
-public interface ServiceMapper {
+public interface TreatmentMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "active", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    Service toEntity(ServiceRequestDto dto);
+    Treatment toEntity(TreatmentRequestDto dto);
 
-    ServiceResponseDto toResponseDto(Service entity);
+    TreatmentResponseDto toResponseDto(Treatment entity);
 
-    ServiceListDto toListDto(Service entity);
+    TreatmentListDto toListDto(Treatment entity);
     
-    ServiceRequestDto toRequestDto(Service entity);
+    TreatmentRequestDto toRequestDto(Treatment entity);
 
-    ServiceNestedDto toNestedDto(Service entity);
+    TreatmentNestedDto toNestedDto(Treatment entity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "active", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    Service updateEntityFromDto(ServiceRequestDto dto, @MappingTarget Service entity);
+    Treatment updateEntityFromDto(TreatmentRequestDto dto, @MappingTarget Treatment entity);
 }

@@ -17,8 +17,8 @@ public record AppointmentRequestDto(
         @NotNull(message = "La hora de inicio es obligatoria")
         LocalTime startTime,
 
-        @NotNull(message = "El servicio es obligatorio")
-        Long serviceId,
+        @NotNull(message = "El tratamiento es obligatorio")
+        Long treatmentId,
 
         @NotNull(message = "El paciente es obligatorio")
         Long patientId,

@@ -1,4 +1,4 @@
-package com.argenischacon.dentalclinic.dto.service;
+package com.argenischacon.dentalclinic.dto.treatment;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -10,10 +10,10 @@ import lombok.Builder;
 import java.math.BigDecimal;
 
 @Builder
-public record ServiceRequestDto(
+public record TreatmentRequestDto(
         @NotBlank(message = "El código de servicio es obligatorio")
         @Size(max = 10, message = "El código no puede exceder 10 caracteres")
-        String serviceCode,
+        String treatmentCode,
 
         @NotBlank(message = "El nombre es obligatorio")
         @Size(max = 100, message = "El nombre no puede exceder 100 caracteres")

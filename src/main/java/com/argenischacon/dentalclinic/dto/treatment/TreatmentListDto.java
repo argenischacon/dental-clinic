@@ -1,12 +1,12 @@
-package com.argenischacon.dentalclinic.dto.service;
+package com.argenischacon.dentalclinic.dto.treatment;
 
 import lombok.Builder;
 import java.math.BigDecimal;
 
 @Builder
-public record ServiceListDto(
+public record TreatmentListDto(
         Long id,
-        String serviceCode,
+        String treatmentCode,
         String name,
         BigDecimal price,
         int durationMinutes,

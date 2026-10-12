@@ -7,19 +7,19 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "services")
+@Table(name = "treatments")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Service {
+public class Treatment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true, length = 10)
-    private String serviceCode;
+    private String treatmentCode;
 
     @Column(nullable = false, unique = true, length = 100)
     private String name;

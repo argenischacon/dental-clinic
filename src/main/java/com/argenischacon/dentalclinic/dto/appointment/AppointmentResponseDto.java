@@ -3,7 +3,7 @@ package com.argenischacon.dentalclinic.dto.appointment;
 import com.argenischacon.dentalclinic.dto.dentist.DentistNestedDto;
 import com.argenischacon.dentalclinic.dto.patient.PatientNestedDto;
 import com.argenischacon.dentalclinic.dto.receptionist.ReceptionistNestedDto;
-import com.argenischacon.dentalclinic.dto.service.ServiceNestedDto;
+import com.argenischacon.dentalclinic.dto.treatment.TreatmentNestedDto;
 import com.argenischacon.dentalclinic.enums.AppointmentStatus;
 import lombok.Builder;
 
@@ -23,5 +23,5 @@ public record AppointmentResponseDto(
         ReceptionistNestedDto createdBy,
         DentistNestedDto dentist,
         PatientNestedDto patient,
-        ServiceNestedDto service
+        TreatmentNestedDto treatment
 ) {}

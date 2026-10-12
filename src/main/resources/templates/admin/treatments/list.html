@@ -4,7 +4,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/admin_layout}">
 <head>
-    <title>Servicios</title>
+    <title>Tratamientos</title>
     <style>
         /* Initial avatar */
         .avatar-circle {
@@ -37,7 +37,7 @@
             display: inline-block;
         }
         /* Name in table */
-        .service-name {
+        .treatment-name {
             font-weight: 600;
             color: #2d3748;
         }
@@ -79,28 +79,28 @@
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <div>
-                <h1 class="h3 mb-1 text-gray-800">Gestión de Servicios</h1>
-                <p class="mb-0 text-gray-600 small">Administra el catálogo de servicios ofrecidos por la clínica</p>
+                <h1 class="h3 mb-1 text-gray-800">Gestión de Tratamientos</h1>
+                <p class="mb-0 text-gray-600 small">Administra el catálogo de tratamientos ofrecidos por la clínica</p>
             </div>
-            <a th:href="@{/admin/services/add}" class="d-none d-sm-inline-block btn btn-primary shadow-sm">
-                <i class="fas fa-plus fa-sm text-white-50 mr-1"></i> Agregar Servicio
+            <a th:href="@{/admin/treatments/add}" class="d-none d-sm-inline-block btn btn-primary shadow-sm">
+                <i class="fas fa-plus fa-sm text-white-50 mr-1"></i> Agregar Tratamiento
             </a>
         </div>
 
         <!-- ===== STATISTICS CARDS ===== -->
         <div class="row mb-4">
 
-            <!-- Total Services -->
+            <!-- Total Treatments -->
             <div class="col-md-4 mb-4">
                 <div class="card border-left-primary shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    Total Servicios
+                                    Total Tratamientos
                                 </div>
                                 <div class="h4 mb-0 font-weight-bold text-gray-800"
-                                     th:text="${totalServices ?: 0}">0</div>
+                                     th:text="${totalTreatments ?: 0}">0</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-notes-medical fa-2x text-gray-300"></i>
@@ -120,7 +120,7 @@
                                     Activos
                                 </div>
                                 <div class="h4 mb-0 font-weight-bold text-gray-800"
-                                     th:text="${activeServices ?: 0}">0</div>
+                                     th:text="${activeTreatments ?: 0}">0</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-check-circle fa-2x text-gray-300"></i>
@@ -140,7 +140,7 @@
                                     Inactivos
                                 </div>
                                 <div class="h4 mb-0 font-weight-bold text-gray-800"
-                                     th:text="${inactiveServices ?: 0}">0</div>
+                                     th:text="${inactiveTreatments ?: 0}">0</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-times-circle fa-2x text-gray-300"></i>
@@ -156,7 +156,7 @@
         <!-- ===== FILTERS ===== -->
         <div class="card shadow mb-4">
             <div class="card-body py-3">
-                <form th:action="@{/admin/services/list}" method="get" id="filterForm">
+                <form th:action="@{/admin/treatments/list}" method="get" id="filterForm">
                     <div class="form-row align-items-end">
 
                         <!-- Search -->
@@ -173,7 +173,7 @@
                                        id="searchInput"
                                        name="search"
                                        class="form-control bg-light border-0 small"
-                                       placeholder="Nombre o código del servicio..."
+                                       placeholder="Nombre o código del tratamiento..."
                                        th:value="${param.search}">
                             </div>
                         </div>
@@ -197,7 +197,7 @@
                             <button type="submit" class="btn btn-primary btn-sm mr-1">
                                 <i class="fas fa-search fa-sm"></i>
                             </button>
-                            <a th:href="@{/admin/services/list}" class="btn btn-light btn-sm text-gray-600">
+                            <a th:href="@{/admin/treatments/list}" class="btn btn-light btn-sm text-gray-600">
                                 <i class="fas fa-times fa-sm"></i> Limpiar
                             </a>
                         </div>
@@ -208,19 +208,19 @@
         </div>
         <!-- ===== END FILTERS ===== -->
 
-        <!-- ===== SERVICES TABLE ===== -->
+        <!-- ===== TREATMENTS TABLE ===== -->
         <div class="card shadow mb-4">
 
             <!-- Card Header -->
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Lista de Servicios</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Lista de Tratamientos</h6>
                 <span class="text-xs text-gray-500">
                     Mostrando
                     <span class="font-weight-bold text-gray-700"
-                          th:text="${servicesPage != null ? servicesPage.numberOfElements : 0}">0</span>
+                          th:text="${treatmentsPage != null ? treatmentsPage.numberOfElements : 0}">0</span>
                     de
                     <span class="font-weight-bold text-gray-700"
-                          th:text="${servicesPage != null ? servicesPage.totalElements : 0}">0</span>
+                          th:text="${treatmentsPage != null ? treatmentsPage.totalElements : 0}">0</span>
                     registros
                 </span>
             </div>
@@ -228,12 +228,12 @@
             <!-- Card Body: Table -->
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover mb-0" id="servicesTable" width="100%" cellspacing="0">
+                    <table class="table table-hover mb-0" id="treatmentsTable" width="100%" cellspacing="0">
 
                         <!-- Header -->
                         <thead class="thead-light">
                             <tr>
-                                <th class="pl-4">Servicio</th>
+                                <th class="pl-4">Tratamiento</th>
                                 <th>Código</th>
                                 <th>Precio</th>
                                 <th>Duración</th>
@@ -246,57 +246,57 @@
                         <tbody>
 
                             <!-- Message if no results -->
-                            <tr th:if="${servicesPage == null or servicesPage.isEmpty()}">
+                            <tr th:if="${treatmentsPage == null or treatmentsPage.isEmpty()}">
                                 <td colspan="6" class="text-center py-5 text-gray-500">
                                     <i class="fas fa-notes-medical fa-3x mb-3 d-block text-gray-300"></i>
-                                    No se encontraron servicios con los filtros aplicados.
+                                    No se encontraron tratamientos con los filtros aplicados.
                                 </td>
                             </tr>
 
                             <!-- Data rows with Thymeleaf -->
-                            <tr th:each="service : ${servicesPage}"
-                                th:classappend="${!service.active} ? 'row-inactive' : ''">
+                            <tr th:each="treatment : ${treatmentsPage}"
+                                th:classappend="${!treatment.active} ? 'row-inactive' : ''">
 
                                 <!-- Icon + Name -->
                                 <td class="align-middle pl-4">
                                     <div class="d-flex align-items-center">
                                         <div class="avatar-circle mr-3"
-                                             th:style="${'background-color: ' + (service.active ? '#4e73df' : '#858796')}">
+                                             th:style="${'background-color: ' + (treatment.active ? '#4e73df' : '#858796')}">
                                             <i class="fas fa-tooth"></i>
                                         </div>
                                         <div>
-                                            <span class="service-name"
-                                                  th:text="${service.name}">Nombre del Servicio</span>
+                                            <span class="treatment-name"
+                                                  th:text="${treatment.name}">Nombre del Tratamiento</span>
                                         </div>
                                     </div>
                                 </td>
 
-                                <!-- Service Code -->
+                                <!-- Treatment Code -->
                                 <td class="align-middle">
-                                    <span class="code-text" th:text="${service.serviceCode}">COD-001</span>
+                                    <span class="code-text" th:text="${treatment.treatmentCode}">COD-001</span>
                                 </td>
 
                                 <!-- Price -->
                                 <td class="align-middle">
-                                    <span class="price-text" th:text="${'$ ' + #numbers.formatDecimal(service.price, 1, 'COMMA', 2, 'POINT')}">$ 0.00</span>
+                                    <span class="price-text" th:text="${'$ ' + #numbers.formatDecimal(treatment.price, 1, 'COMMA', 2, 'POINT')}">$ 0.00</span>
                                 </td>
 
                                 <!-- Duration -->
                                 <td class="align-middle">
-                                    <span class="font-weight-bold text-gray-700" th:text="${service.durationMinutes + ' min'}">30 min</span>
+                                    <span class="font-weight-bold text-gray-700" th:text="${treatment.durationMinutes + ' min'}">30 min</span>
                                 </td>
 
                                 <!-- Status -->
                                 <td class="align-middle">
                                     <!-- Active -->
-                                    <span th:if="${service.active}"
+                                    <span th:if="${treatment.active}"
                                           class="badge-status"
                                           style="background-color:#dcfce7; color:#15803d; border:1px solid #bbf7d0;">
                                         <span class="dot" style="background-color:#16a34a;"></span>
                                         Activo
                                     </span>
                                     <!-- Inactivo -->
-                                    <span th:unless="${service.active}"
+                                    <span th:unless="${treatment.active}"
                                           class="badge-status"
                                           style="background-color:#f3f4f6; color:#6b7280; border:1px solid #e5e7eb;">
                                         <span class="dot" style="background-color:#9ca3af;"></span>
@@ -309,9 +309,9 @@
                                     <div class="btn-group" role="group">
 
                                         <!-- Edit -->
-                                        <a th:href="@{/admin/services/edit/{id}(id=${service.id})}"
+                                        <a th:href="@{/admin/treatments/edit/{id}(id=${treatment.id})}"
                                            class="btn btn-outline-primary btn-action mr-1"
-                                           title="Editar servicio">
+                                           title="Editar tratamiento">
                                             <i class="fas fa-pencil-alt fa-xs"></i>
                                         </a>
 
@@ -320,40 +320,40 @@
                                                 class="btn btn-outline-secondary btn-action mr-1"
                                                 title="Ver detalle"
                                                 data-toggle="modal"
-                                                data-target="#serviceDetailModal"
-                                                th:attr="hx-get=@{/admin/services/{id}/detail(id=${service.id})}"
-                                                hx-target="#serviceDetailModal .modal-dialog"
+                                                data-target="#treatmentDetailModal"
+                                                th:attr="hx-get=@{/admin/treatments/{id}/detail(id=${treatment.id})}"
+                                                hx-target="#treatmentDetailModal .modal-dialog"
                                                 hx-swap="innerHTML">
                                             <i class="fas fa-eye fa-xs"></i>
                                         </button>
 
                                         <!-- Deactivate (if active) -->
-                                        <form th:if="${service.active}"
-                                              th:action="@{/admin/services/deactivate/{id}(id=${service.id})}"
+                                        <form th:if="${treatment.active}"
+                                              th:action="@{/admin/treatments/deactivate/{id}(id=${treatment.id})}"
                                               method="post" class="d-inline"
-                                              th:id="'form-' + ${service.id}">
+                                              th:id="'form-' + ${treatment.id}">
                                             <button type="button"
                                                     class="btn btn-outline-danger btn-action"
                                                     title="Desactivar"
-                                                    th:attr="data-form-id='form-' + ${service.id},
+                                                    th:attr="data-form-id='form-' + ${treatment.id},
                                                              data-action='desactivar',
-                                                             data-name=${service.name}"
+                                                             data-name=${treatment.name}"
                                                     onclick="confirmToggle(this)">
                                                 <i class="fas fa-ban fa-xs"></i>
                                             </button>
                                         </form>
 
                                         <!-- Activate (if inactive) -->
-                                        <form th:unless="${service.active}"
-                                              th:action="@{/admin/services/activate/{id}(id=${service.id})}"
+                                        <form th:unless="${treatment.active}"
+                                              th:action="@{/admin/treatments/activate/{id}(id=${treatment.id})}"
                                               method="post" class="d-inline"
-                                              th:id="'form-' + ${service.id}">
+                                              th:id="'form-' + ${treatment.id}">
                                             <button type="button"
                                                     class="btn btn-outline-success btn-action"
                                                     title="Activar"
-                                                    th:attr="data-form-id='form-' + ${service.id},
+                                                    th:attr="data-form-id='form-' + ${treatment.id},
                                                              data-action='activar',
-                                                             data-name=${service.name}"
+                                                             data-name=${treatment.name}"
                                                     onclick="confirmToggle(this)">
                                                 <i class="fas fa-check fa-xs"></i>
                                             </button>
@@ -373,29 +373,29 @@
 
             <!-- ===== PAGINATION ===== -->
             <div class="card-footer bg-white d-flex align-items-center justify-content-between py-3"
-                 th:if="${servicesPage != null and servicesPage.totalPages > 0}">
+                 th:if="${treatmentsPage != null and treatmentsPage.totalPages > 0}">
 
                 <!-- Records info -->
                 <div class="text-xs text-gray-600">
                     Página
                     <span class="font-weight-bold"
-                          th:text="${servicesPage.number + 1}">1</span>
+                          th:text="${treatmentsPage.number + 1}">1</span>
                     de
                     <span class="font-weight-bold"
-                          th:text="${servicesPage.totalPages}">1</span>
+                          th:text="${treatmentsPage.totalPages}">1</span>
                     &mdash;
-                    <span th:text="${servicesPage.totalElements}">0</span> registros en total
+                    <span th:text="${treatmentsPage.totalElements}">0</span> registros en total
                 </div>
 
                 <!-- Pagination controls -->
-                <nav aria-label="Paginación de servicios">
+                <nav aria-label="Paginación de tratamientos">
                     <ul class="pagination pagination-sm mb-0">
 
                         <!-- Previous -->
-                        <li class="page-item" th:classappend="${servicesPage.first} ? 'disabled'">
+                        <li class="page-item" th:classappend="${treatmentsPage.first} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{/admin/services/list(page=${servicesPage.number - 1},
-                                          size=${servicesPage.size},
+                               th:href="@{/admin/treatments/list(page=${treatmentsPage.number - 1},
+                                          size=${treatmentsPage.size},
                                           search=${param.search},
                                           active=${param.active})}"
                                aria-label="Anterior">
@@ -405,21 +405,21 @@
 
                         <!-- Page numbers -->
                         <li class="page-item"
-                            th:each="pageNum : ${#numbers.sequence(0, servicesPage.totalPages - 1)}"
-                            th:classappend="${pageNum == servicesPage.number} ? 'active'">
+                            th:each="pageNum : ${#numbers.sequence(0, treatmentsPage.totalPages - 1)}"
+                            th:classappend="${pageNum == treatmentsPage.number} ? 'active'">
                             <a class="page-link"
-                               th:href="@{/admin/services/list(page=${pageNum},
-                                          size=${servicesPage.size},
+                               th:href="@{/admin/treatments/list(page=${pageNum},
+                                          size=${treatmentsPage.size},
                                           search=${param.search},
                                           active=${param.active})}"
                                th:text="${pageNum + 1}">1</a>
                         </li>
 
                         <!-- Next -->
-                        <li class="page-item" th:classappend="${servicesPage.last} ? 'disabled'">
+                        <li class="page-item" th:classappend="${treatmentsPage.last} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{/admin/services/list(page=${servicesPage.number + 1},
-                                          size=${servicesPage.size},
+                               th:href="@{/admin/treatments/list(page=${treatmentsPage.number + 1},
+                                          size=${treatmentsPage.size},
                                           search=${param.search},
                                           active=${param.active})}"
                                aria-label="Siguiente">
@@ -434,7 +434,7 @@
             <!-- ===== END PAGINATION ===== -->
 
         </div>
-        <!-- ===== END SERVICES TABLE ===== -->
+        <!-- ===== END TREATMENTS TABLE ===== -->
 
         <!-- Script to show SweetAlert if 'success' attribute exists -->
         <script th:if="${success}">
@@ -455,8 +455,8 @@
                 const name    = btn.dataset.name;
                 const isDeactivate = action === 'desactivar';
                 Swal.fire({
-                    title: action.charAt(0).toUpperCase() + action.slice(1) + ' servicio',
-                    html: 'El servicio <strong>' + name + '</strong> ser\u00e1 '
+                    title: action.charAt(0).toUpperCase() + action.slice(1) + ' tratamiento',
+                    html: 'El tratamiento <strong>' + name + '</strong> ser\u00e1 '
                         + (isDeactivate ? 'desactivado y ya no estar\u00e1 disponible' : 'reactivado') + '.',
                     icon: 'warning',
                     showCancelButton: true,
@@ -472,9 +472,9 @@
             }
         </script>
 
-        <!-- ===== MODAL: VIEW SERVICE DETAILS ===== -->
-        <div class="modal fade" id="serviceDetailModal" tabindex="-1"
-             role="dialog" aria-labelledby="serviceDetailModalLabel" aria-hidden="true">
+        <!-- ===== MODAL: VIEW TREATMENT DETAILS ===== -->
+        <div class="modal fade" id="treatmentDetailModal" tabindex="-1"
+             role="dialog" aria-labelledby="treatmentDetailModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
 
                 <!-- Content loaded via HTMX -->

@@ -63,8 +63,8 @@ public class Appointment {
     private Patient patient;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id", nullable = false)
-    private Service service;
+    @JoinColumn(name = "treatment_id", nullable = false)
+    private Treatment treatment;
 
     @PrePersist
     public void prePersist() {
